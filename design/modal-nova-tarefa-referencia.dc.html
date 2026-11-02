@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Nova tarefa</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit}
+</style>
+</helmet>
+<div style="width: 640px; height: 860px; background: linear-gradient(160deg, #EDE6F8 0%, #E6DDF5 50%, #F3E3EF 100%); display: flex; align-items: center; justify-content: center; padding: 40px; font-family: 'Plus Jakarta Sans', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1F1147; font-size: 14px; line-height: 1.5">
+  <div role="dialog" aria-modal="true" aria-labelledby="nt2-title" style="width: 100%; max-width: 520px; background: #FFFFFF; border-radius: 24px; padding: 28px; box-shadow: 0 30px 60px rgba(76,29,149,0.20); display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #FBCFE8, #DDD6FE); color: #6D28D9; display: inline-flex; align-items: center; justify-content: center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+        </span>
+        <div style="display: flex; flex-direction: column">
+          <h2 id="nt2-title" style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.02em">Nova tarefa</h2>
+          <span style="font-size: 13px; color: #4B4563">Defina prazo, lembrete e prioridade</span>
+        </div>
+      </div>
+      <button type="button" aria-label="Fechar" style="width: 40px; height: 40px; border-radius: 12px; border: 1px solid #EFEAF8; background: #FFFFFF; color: #1F1147; display: inline-flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <label for="nt2-nome" style="font-size: 13px; font-weight: 700">Nome da tarefa</label>
+      <input id="nt2-nome" type="text" value="Revisar proposta do cliente" readonly style="height: 50px; padding: 0 16px; border: 1.5px solid #A78BFA; border-radius: 14px; background: #FFFFFF; color: #1F1147; font-size: 14px; box-shadow: 0 0 0 4px rgba(167,139,250,0.18)">
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="nt2-data" style="font-size: 13px; font-weight: 700">Prazo</label>
+        <input id="nt2-data" type="text" value="02/11/2026" readonly style="height: 50px; padding: 0 14px; border: 1px solid #E7E1F5; border-radius: 14px; background: #FAF8FE; color: #1F1147; font-size: 14px">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="nt2-hora" style="font-size: 13px; font-weight: 700">Horário</label>
+        <select id="nt2-hora" style="height: 50px; padding: 0 14px; border: 1px solid #E7E1F5; border-radius: 14px; background: #FAF8FE; color: #1F1147; font-size: 14px">
+          <option>Sem horário definido</option>
+          <option>15:30</option>
+          <option>16:00</option>
+          <option>16:30</option>
+        </select>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <label for="nt2-lembrete" style="font-size: 13px; font-weight: 700">Lembrete</label>
+      <select id="nt2-lembrete" style="height: 50px; padding: 0 14px; border: 1px solid #E7E1F5; border-radius: 14px; background: #FAF8FE; color: #1F1147; font-size: 14px">
+        <option>30 minutos antes</option>
+        <option>Sem lembrete</option>
+        <option>15 minutos antes</option>
+        <option>1 hora antes</option>
+        <option>1 dia antes</option>
+      </select>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span id="nt2-prio" style="font-size: 13px; font-weight: 700">Prioridade</span>
+      <div role="group" aria-labelledby="nt2-prio" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <button type="button" aria-pressed="true" style="min-height: 46px; border-radius: 14px; border: 1.5px solid #F9A8D4; background: #FCE7F3; color: #BE185D; font-size: 14px; font-weight: 700">Alta</button>
+        <button type="button" aria-pressed="false" style="min-height: 46px; border-radius: 14px; border: 1.5px solid #E7E1F5; background: #FFFFFF; color: #4B4563; font-size: 14px; font-weight: 700">Média</button>
+        <button type="button" aria-pressed="false" style="min-height: 46px; border-radius: 14px; border: 1.5px solid #E7E1F5; background: #FFFFFF; color: #4B4563; font-size: 14px; font-weight: 700">Baixa</button>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <label for="nt2-proj" style="font-size: 13px; font-weight: 700">Projeto (opcional)</label>
+      <select id="nt2-proj" style="height: 50px; padding: 0 14px; border: 1px solid #E7E1F5; border-radius: 14px; background: #FAF8FE; color: #1F1147; font-size: 14px">
+        <option>Painel do lojista</option>
+        <option>Sem projeto</option>
+      </select>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding-top: 4px">
+      <button type="button" style="min-height: 48px; padding: 0 22px; border-radius: 14px; border: 1px solid #E7E1F5; background: #FFFFFF; color: #1F1147; font-size: 14px; font-weight: 700">Cancelar</button>
+      <button type="button" style="min-height: 48px; padding: 0 24px; border-radius: 14px; border: 0; background: linear-gradient(90deg, #DB2777, #7C3AED); color: #FFFFFF; font-size: 14px; font-weight: 700; box-shadow: 0 10px 22px rgba(124,58,237,0.28)">Salvar tarefa</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":640,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

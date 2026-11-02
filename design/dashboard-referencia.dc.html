@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Dashboard de tarefas</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid #8B5CF6;outline-offset:2px}
+ul{list-style:none;margin:0;padding:0}
+table{border-collapse:separate;border-spacing:0}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 24px; padding: 20px; background: {{c.pageBg}}; color: {{c.ink}}; color-scheme: {{c.scheme}}; font-family: 'Plus Jakarta Sans', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5">
+
+  <nav aria-label="Navegação principal" style="flex: 1 1 236px; align-self: stretch; background: {{c.navBg}}; border: 1px solid {{c.border}}; border-radius: 24px; box-shadow: {{c.shadow}}; padding: 24px 16px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 10px">
+      <span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, #EC4899, #8B5CF6); display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4 10-10"></path></svg>
+      </span>
+      <span style="font-weight: 800; font-size: 20px; letter-spacing: -0.02em">Entregas</span>
+    </div>
+    <ul style="display: flex; flex-direction: column; gap: 4px">
+      <li><a href="#visao" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 14px; background: {{c.navActiveBg}}; color: {{c.navActiveFg}}; font-weight: 600; text-decoration: none">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>
+        Visão geral</a></li>
+      <li><a href="#hoje" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 14px; color: {{c.ink2}}; font-weight: 500; text-decoration: none">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"></path><path d="m3 7 2 2 4-4"></path><path d="M13 6h8"></path><path d="M13 12h8"></path><path d="M13 18h8"></path></svg>
+        Tarefas de hoje</a></li>
+      <li><a href="#atrasadas" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 14px; color: {{c.ink2}}; font-weight: 500; text-decoration: none">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+        Atrasadas</a></li>
+      <li><a href="#calendario" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 14px; color: {{c.ink2}}; font-weight: 500; text-decoration: none">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+        Calendário</a></li>
+      <li><a href="#lembretes" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 14px; color: {{c.ink2}}; font-weight: 500; text-decoration: none">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+        Lembretes</a></li>
+      <li><a href="#projetos" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 14px; color: {{c.ink2}}; font-weight: 500; text-decoration: none">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 15v2"></path><path d="M11 11v6"></path><path d="M15 7v10"></path><path d="M19 12v5"></path></svg>
+        Projetos do time</a></li>
+      <li><a href="#entregas" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 14px; color: {{c.ink2}}; font-weight: 500; text-decoration: none">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
+        Registro de entregas</a></li>
+    </ul>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 20px">
+      <div style="padding: 20px; border-radius: 20px; background: {{c.promoBg}}; border: 1px solid {{c.promoBorder}}; display: flex; flex-direction: column; gap: 10px">
+        <span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: {{c.pinkSoftBg}}; color: {{c.pinkSoftFg}}; display: inline-flex; align-items: center; justify-content: center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        </span>
+        <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.25">Conectar ao Linear</span>
+        <span style="font-size: 13px; color: {{c.ink2}}">Traga o progresso real dos projetos do seu time para cá.</span>
+        <button type="button" style="min-height: 44px; border: 0; border-radius: 14px; background: linear-gradient(90deg, #F9A8D4, #F472B6); color: #3B0764; font-weight: 700; box-shadow: 0 8px 18px rgba(236,72,153,0.25)">Conectar</button>
+      </div>
+      <span style="padding: 0 10px; font-size: 12px; color: {{c.muted}}; white-space: pre-line">Organize o dia.
+Entregue no prazo.</span>
+    </div>
+  </nav>
+
+  <main id="visao" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+      <div style="flex: 1 1 320px; display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 18px; border-radius: 9999px; background: {{c.navBg}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadowSm}}; color: {{c.muted}}">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        <input type="search" aria-label="Buscar tarefas" value="{{query}}" onChange="{{onQuery}}" placeholder="Buscar tarefas, projetos ou lembretes…" style="flex: 1; min-width: 0; height: 44px; border: 0; background: transparent; color: {{c.ink}}; font-size: 14px; outline-offset: 4px">
+        <span style="padding: 4px 10px; border-radius: 10px; background: {{c.subtle}}; font-size: 12px; font-weight: 600; color: {{c.ink2}}">⌘ K</span>
+      </div>
+      <div role="group" aria-label="Tema da interface" style="display: inline-flex; gap: 4px; padding: 4px; border-radius: 9999px; background: {{c.navBg}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadowSm}}">
+        <sc-for list="{{themeOpts}}" as="th" hint-placeholder-count="2">
+          <button type="button" onClick="{{th.pick}}" aria-pressed="{{th.pressed}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9999px; background: {{th.bg}}; color: {{th.fg}}; font-size: 13px; font-weight: 700">
+            <sc-if value="{{th.isSun}}" hint-placeholder-val="{{true}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></sc-if>
+            <sc-if value="{{th.isMoon}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></sc-if>
+            {{th.label}}
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <header style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 15px; font-weight: 500; color: {{c.ink2}}">{{greeting}}</span>
+        <h1 style="margin: 0; font-size: clamp(32px, 3.4vw, 46px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05">Minhas tarefas</h1>
+        <p style="margin: 0; font-size: 15px; color: {{c.ink2}}">Acompanhe prazos, entregas e o andamento do time, tudo em um lugar.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px">
+        <span style="display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadowSm}}; font-weight: 600">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.accentText}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+          {{todayLabel}}
+        </span>
+        <button type="button" onClick="{{openModal}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 14px; background: linear-gradient(90deg, #DB2777, #7C3AED); color: #FFFFFF; font-size: 15px; font-weight: 700; box-shadow: 0 10px 22px rgba(124,58,237,0.28)">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+          Nova tarefa
+        </button>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 20px">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+        <section style="display: flex; align-items: flex-start; gap: 16px; padding: 22px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}">
+          <span aria-hidden="true" style="flex: none; width: 52px; height: 52px; border-radius: 16px; background: {{k.tileBg}}; color: {{k.tileFg}}; display: inline-flex; align-items: center; justify-content: center">
+            <sc-if value="{{k.iList}}" hint-placeholder-val="{{true}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="11" width="4" height="9" rx="1.5"></rect><rect x="10" y="6" width="4" height="14" rx="1.5"></rect><rect x="16" y="13" width="4" height="7" rx="1.5"></rect></svg></sc-if>
+            <sc-if value="{{k.iCheck}}" hint-placeholder-val="{{false}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.2-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4Z"></path></svg></sc-if>
+            <sc-if value="{{k.iPlay}}" hint-placeholder-val="{{false}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"></path></svg></sc-if>
+            <sc-if value="{{k.iAlert}}" hint-placeholder-val="{{false}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0ZM11 9h2v5h-2Zm0 6.5h2v2h-2Z"></path></svg></sc-if>
+          </span>
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+            <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: {{c.ink2}}">{{k.label}}</h2>
+            <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1">{{k.value}}</span>
+            <span style="font-size: 12px; color: {{c.muted}}"><span style="font-weight: 700; color: {{k.noteColor}}">{{k.noteStrong}}</span> {{k.note}}</span>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 24px">
+      <sc-for list="{{donutCards}}" as="dc" hint-placeholder-count="2">
+        <section aria-label="{{dc.title}}" style="padding: 24px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column; gap: 18px">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em">{{dc.title}}</h2>
+            <span style="font-size: 13px; color: {{c.ink2}}">{{dc.subtitle}}</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px">
+            <div style="position: relative; width: 190px; height: 190px">
+              <svg width="190" height="190" viewBox="0 0 190 190" role="img" aria-label="{{dc.aria}}">
+                <circle cx="95" cy="95" r="72" fill="none" stroke="{{c.donutTrack}}" stroke-width="28"></circle>
+                <sc-for list="{{dc.segs}}" as="sg" hint-placeholder-count="3">
+                  <circle cx="95" cy="95" r="72" fill="none" stroke="{{sg.color}}" stroke-width="28" transform="rotate(-90 95 95)" style="stroke-dasharray: {{sg.dash}}; stroke-dashoffset: {{sg.offset}}"></circle>
+                </sc-for>
+              </svg>
+              <div aria-hidden="true" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center">
+                <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1">{{dc.pct}}%</span>
+                <span style="font-size: 12px; color: {{c.ink2}}">entregue</span>
+              </div>
+            </div>
+            <ul style="flex: 1 1 170px; display: flex; flex-direction: column; gap: 12px">
+              <sc-for list="{{dc.legend}}" as="lg" hint-placeholder-count="3">
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 13px">
+                  <span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 9999px; background: {{lg.color}}"></span>
+                  <span style="flex: 1; color: {{c.ink2}}">{{lg.label}}</span>
+                  <span style="font-weight: 700">{{lg.value}}</span>
+                  <span style="width: 40px; text-align: right; font-weight: 700">{{lg.pct}}</span>
+                </li>
+              </sc-for>
+              <li style="display: flex; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid {{c.line}}; font-size: 13px">
+                <span style="flex: 1; color: {{c.ink2}}">Total</span>
+                <span style="font-weight: 800">{{dc.total}}</span>
+                <span style="width: 40px"></span>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+
+    <section id="hoje" aria-labelledby="h-hoje" style="padding: 24px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h2 id="h-hoje" style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em">Tarefas de hoje</h2>
+          <span style="font-size: 13px; color: {{c.ink2}}">Só o que vence hoje, por ordem de prazo</span>
+        </div>
+        <div role="group" aria-label="Filtrar por status" style="display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 14px; background: {{c.subtle}}">
+          <sc-for list="{{filterTabs}}" as="ft" hint-placeholder-count="4">
+            <button type="button" onClick="{{ft.pick}}" aria-pressed="{{ft.pressed}}" style="min-height: 36px; padding: 0 14px; border: 0; border-radius: 10px; background: {{ft.bg}}; color: {{ft.fg}}; font-size: 13px; font-weight: 700; box-shadow: {{ft.shadow}}; white-space: nowrap">{{ft.label}} <span style="font-weight: 600; opacity: 0.8">{{ft.count}}</span></button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="overflow-x: auto">
+        <table style="width: 100%; min-width: 900px; font-size: 13px">
+          <thead>
+            <tr style="text-align: left; color: {{c.ink2}}; font-size: 12px">
+              <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; border-radius: 12px 0 0 12px; font-weight: 600; width: 44px">#</th>
+              <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Tarefa</th>
+              <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Prioridade</th>
+              <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Prazo</th>
+              <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Lembrete</th>
+              <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Status</th>
+              <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; border-radius: 0 12px 12px 0; font-weight: 600">Entrega</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{tableTasks}}" as="t" hint-placeholder-count="6">
+              <tr>
+                <td style="padding: 12px 14px; border-bottom: 1px solid {{c.line}}; color: {{c.ink2}}">{{t.num}}</td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid {{c.line}}">
+                  <div style="display: flex; align-items: center; gap: 12px">
+                    <span aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: {{t.pb.tile}}; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h10l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm3 9v2h8v-2Zm0 4v2h5v-2Z"></path></svg>
+                    </span>
+                    <span style="display: flex; flex-direction: column; min-width: 0">
+                      <span style="font-weight: 700; text-decoration: {{t.deco}}; color: {{t.nameColor}}">{{t.name}}</span>
+                      <span style="font-size: 12px; color: {{c.muted}}">{{t.projectLabel}}</span>
+                    </span>
+                  </div>
+                </td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid {{c.line}}"><span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 8px; background: {{t.pb.bg}}; color: {{t.pb.fg}}; font-size: 12px; font-weight: 700">{{t.pb.label}}</span></td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid {{c.line}}; font-weight: 600; white-space: nowrap">{{t.timeLabel}}</td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid {{c.line}}; color: {{c.ink2}}">{{t.reminderLabel}}</td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid {{c.line}}">
+                  <div role="group" aria-label="Status de {{t.name}}" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: {{c.subtle}}">
+                    <sc-for list="{{t.opts}}" as="o" hint-placeholder-count="3">
+                      <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="min-height: 34px; padding: 0 12px; border: 0; border-radius: 9px; background: {{o.bg}}; color: {{o.fg}}; font-size: 12px; font-weight: 700; white-space: nowrap; box-shadow: {{o.shadow}}">{{o.label}}</button>
+                    </sc-for>
+                  </div>
+                </td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid {{c.line}}">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 8px; background: {{t.dBg}}; color: {{t.dFg}}; font-size: 12px; font-weight: 700; white-space: nowrap">{{t.deliveredShort}}</span>
+                </td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <sc-if value="{{tableEmpty}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; padding: 20px 14px; color: {{c.ink2}}">Nenhuma tarefa encontrada com esse filtro.</p>
+        </sc-if>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; align-items: start">
+
+      <section id="atrasadas" aria-labelledby="h-atrasadas" style="padding: 24px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 id="h-atrasadas" style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em">Atrasadas</h2>
+            <span style="font-size: 13px; color: {{c.ink2}}">Prazo vencido, fora da lista do dia</span>
+          </div>
+          <span style="display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 9999px; background: {{c.lateBg}}; color: {{c.lateFg}}; font-size: 12px; font-weight: 700; white-space: nowrap">{{overdueCountLabel}}</span>
+        </div>
+        <ul style="display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{overdue}}" as="t" hint-placeholder-count="2">
+            <li style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; background: {{c.lateItemBg}}; border: 1px solid {{c.lateItemBorder}}">
+              <div style="display: flex; align-items: flex-start; gap: 12px">
+                <span aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: {{c.lateBg}}; color: {{c.lateIcon}}; display: inline-flex; align-items: center; justify-content: center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0ZM11 9h2v5h-2Zm0 6.5h2v2h-2Z"></path></svg>
+                </span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-weight: 700">{{t.name}}</span>
+                  <span style="font-size: 12px; font-weight: 600; color: {{c.lateFg}}">{{t.lateLabel}}</span>
+                </span>
+                <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 8px; background: {{t.pb.bg}}; color: {{t.pb.fg}}; font-size: 11px; font-weight: 700">{{t.pb.label}}</span>
+              </div>
+              <div role="group" aria-label="Status de {{t.name}}" style="display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: {{c.card}}; border: 1px solid {{c.lateItemBorder}}">
+                <sc-for list="{{t.opts}}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="flex: 1; min-height: 36px; padding: 0 8px; border: 0; border-radius: 9px; background: {{o.bg}}; color: {{o.fg}}; font-size: 12px; font-weight: 700; white-space: nowrap">{{o.label}}</button>
+                </sc-for>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{noOverdue}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; font-size: 13px; color: {{c.ink2}}">Nenhuma tarefa atrasada.</p>
+        </sc-if>
+      </section>
+
+      <section id="calendario" aria-labelledby="h-cal" style="padding: 24px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 id="h-cal" style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em">Calendário</h2>
+            <span style="font-size: 13px; color: {{c.ink2}}">{{monthLabel}}</span>
+          </div>
+          <div style="display: flex; gap: 6px">
+            <button type="button" onClick="{{prevMonth}}" aria-label="Mês anterior" style="width: 40px; height: 40px; border-radius: 12px; border: 1px solid {{c.border}}; background: {{c.card}}; color: {{c.ink}}; display: inline-flex; align-items: center; justify-content: center">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+            <button type="button" onClick="{{nextMonth}}" aria-label="Próximo mês" style="width: 40px; height: 40px; border-radius: 12px; border: 1px solid {{c.border}}; background: {{c.card}}; color: {{c.ink}}; display: inline-flex; align-items: center; justify-content: center">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; font-size: 11px; font-weight: 700; color: {{c.muted}}; text-align: center">
+          <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+          <sc-for list="{{calCells}}" as="cc" hint-placeholder-count="35">
+            <button type="button" onClick="{{cc.pick}}" aria-label="{{cc.aria}}" aria-pressed="{{cc.selected}}" style="min-height: 44px; padding: 4px 0; border-radius: 12px; border: 1.5px solid {{cc.border}}; background: {{cc.bg}}; color: {{cc.color}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px">
+              <span style="font-size: 13px; font-weight: {{cc.weight}}">{{cc.day}}</span>
+              <span style="display: flex; gap: 2px; height: 5px">
+                <sc-for list="{{cc.dots}}" as="dot" hint-placeholder-count="2">
+                  <span style="width: 5px; height: 5px; border-radius: 9999px; background: {{dot.color}}"></span>
+                </sc-for>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: {{c.ink2}}">
+          <span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 9999px; background: #8B5CF6"></span>Entregue</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 9999px; background: #EC4899"></span>Aberta</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 9999px; background: #EA580C"></span>Atrasada</span>
+        </div>
+        <div style="padding: 16px; border-radius: 16px; background: {{c.panel}}; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+            <h3 style="margin: 0; font-size: 14px; font-weight: 700">{{selLabel}}</h3>
+            <span style="font-size: 12px; color: {{c.ink2}}">{{selCount}}</span>
+          </div>
+          <ul style="display: flex; flex-direction: column; gap: 8px">
+            <sc-for list="{{selTasks}}" as="s" hint-placeholder-count="3">
+              <li style="display: flex; align-items: center; gap: 10px; font-size: 13px">
+                <span style="width: 42px; font-weight: 700; color: {{c.ink2}}">{{s.timeShort}}</span>
+                <span style="flex: 1; min-width: 0; text-decoration: {{s.deco}}; color: {{s.nameColor}}">{{s.name}}</span>
+                <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 7px; background: {{s.stBg}}; color: {{s.stFg}}; font-size: 11px; font-weight: 700; white-space: nowrap">{{s.calStatus}}</span>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{selEmpty}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; font-size: 13px; color: {{c.ink2}}">Nenhuma tarefa neste dia.</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="lembretes" aria-labelledby="h-lembretes" style="padding: 24px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 id="h-lembretes" style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em">Lembretes</h2>
+            <span style="font-size: 13px; color: {{c.ink2}}">Avisos antes do prazo de cada tarefa</span>
+          </div>
+          <span style="display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 9999px; background: {{c.pinkSoftBg}}; color: {{c.pinkSoftFg}}; font-size: 12px; font-weight: 700; white-space: nowrap">{{pendingLabel}}</span>
+        </div>
+        <sc-if value="{{showBanner}}" hint-placeholder-val="{{true}}">
+          <div style="padding: 18px; border-radius: 16px; background: {{c.remHi}}; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; align-items: flex-start; gap: 12px">
+              <span aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: {{c.card}}; color: #DB2777; display: inline-flex; align-items: center; justify-content: center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 6.5-2.6 8.6-2.7 8.7A1 1 0 0 0 4 18.5h16a1 1 0 0 0 .7-1.8S18 14.5 18 8a6 6 0 0 0-6-6Zm-2.2 18a2.4 2.4 0 0 0 4.4 0Z"></path></svg>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                <span style="font-size: 12px; font-weight: 700; color: {{c.pinkSoftFg}}">Próximo · {{banner.reminder}}</span>
+                <span style="font-weight: 700">{{banner.name}}</span>
+                <span style="font-size: 12px; color: {{c.ink2}}">{{banner.dueLabel}}</span>
+              </span>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button type="button" onClick="{{snooze}}" style="flex: 1; min-height: 40px; border-radius: 12px; border: 0; background: {{c.card}}; color: {{c.ink}}; font-size: 13px; font-weight: 700">Adiar 15 min</button>
+              <button type="button" onClick="{{dismiss}}" style="flex: 1; min-height: 40px; border-radius: 12px; border: 0; background: linear-gradient(90deg, #DB2777, #7C3AED); color: #FFFFFF; font-size: 13px; font-weight: 700">Dispensar</button>
+            </div>
+          </div>
+        </sc-if>
+        <ul style="display: flex; flex-direction: column">
+          <sc-for list="{{reminders}}" as="r" hint-placeholder-count="4">
+            <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid {{c.line}}">
+              <span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 30px; border-radius: 9px; background: {{r.chipBg}}; color: {{r.chipFg}}; font-size: 12px; font-weight: 700">{{r.time}}</span>
+              <span style="flex: 1; min-width: 0; font-size: 13px; font-weight: 600; text-decoration: {{r.deco}}; color: {{r.nameColor}}">{{r.name}}</span>
+              <span style="font-size: 12px; color: {{c.ink2}}; white-space: nowrap">{{r.state}}</span>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{noReminders}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; font-size: 13px; color: {{c.ink2}}">Nenhum lembrete para hoje.</p>
+        </sc-if>
+      </section>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+      <section id="projetos" aria-labelledby="h-proj" style="flex: 2 1 600px; min-width: 0; padding: 24px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column; gap: 18px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 id="h-proj" style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em">Projetos do time em andamento</h2>
+            <span style="font-size: 13px; color: {{c.ink2}}">Entregue e restante até a última tarefa · Linear (dados de exemplo)</span>
+          </div>
+          <button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 12px; border: 1px solid {{c.fieldBorder}}; background: {{c.card}}; color: {{c.ink}}; font-size: 13px; font-weight: 700">Ver no Linear</button>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; min-width: 720px; font-size: 13px">
+            <thead>
+              <tr style="text-align: left; color: {{c.ink2}}; font-size: 12px">
+                <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; border-radius: 12px 0 0 12px; font-weight: 600">Projeto</th>
+                <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600; width: 30%">Entregue</th>
+                <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Falta</th>
+                <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Issues</th>
+                <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; font-weight: 600">Última entrega</th>
+                <th scope="col" style="padding: 12px 14px; background: {{c.thead}}; border-radius: 0 12px 12px 0; font-weight: 600">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{projects}}" as="p" hint-placeholder-count="4">
+                <tr>
+                  <td style="padding: 14px; border-bottom: 1px solid {{c.line}}">
+                    <div style="display: flex; align-items: center; gap: 12px">
+                      <span aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: {{p.tile}}; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800">{{p.key}}</span>
+                      <span style="display: flex; flex-direction: column; min-width: 0">
+                        <span style="font-weight: 700">{{p.name}}</span>
+                        <span style="display: flex; padding-left: 5px; margin-top: 4px">
+                          <sc-for list="{{p.people}}" as="m" hint-placeholder-count="3">
+                            <span style="width: 22px; height: 22px; margin-left: -5px; border-radius: 9999px; border: 2px solid {{c.card}}; background: {{c.avatarBg}}; color: {{c.avatarFg}}; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">{{m}}</span>
+                          </sc-for>
+                        </span>
+                      </span>
+                    </div>
+                  </td>
+                  <td style="padding: 14px; border-bottom: 1px solid {{c.line}}">
+                    <div style="display: flex; align-items: center; gap: 10px">
+                      <div role="progressbar" aria-label="Progresso de {{p.name}}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{p.pct}}" style="flex: 1; height: 8px; border-radius: 9999px; background: {{c.track}}; overflow: hidden">
+                        <div style="height: 100%; width: {{p.pctW}}; border-radius: 9999px; background: linear-gradient(90deg, #F472B6, #8B5CF6)"></div>
+                      </div>
+                      <span style="width: 40px; font-weight: 800">{{p.pct}}%</span>
+                    </div>
+                  </td>
+                  <td style="padding: 14px; border-bottom: 1px solid {{c.line}}; font-weight: 600; color: {{c.ink2}}">{{p.remaining}}%</td>
+                  <td style="padding: 14px; border-bottom: 1px solid {{c.line}}">{{p.done}}/{{p.total}}</td>
+                  <td style="padding: 14px; border-bottom: 1px solid {{c.line}}"><span style="display: flex; flex-direction: column"><span style="font-weight: 600">{{p.dueLabel}}</span><span style="font-size: 12px; color: {{c.muted}}">{{p.daysLabel}}</span></span></td>
+                  <td style="padding: 14px; border-bottom: 1px solid {{c.line}}"><span style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 8px; background: {{p.stBg}}; color: {{p.stFg}}; font-size: 12px; font-weight: 700; white-space: nowrap"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 9999px; background: {{p.stFg}}"></span>{{p.statusLabel}}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="entregas" aria-labelledby="h-entregas" style="flex: 1 1 320px; min-width: 0; padding: 24px; border-radius: 20px; background: {{c.card}}; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h2 id="h-entregas" style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em">Registro de entregas</h2>
+          <span style="font-size: 13px; color: {{c.ink2}}">Quando cada tarefa foi concluída</span>
+        </div>
+        <ul style="display: flex; flex-direction: column">
+          <sc-for list="{{deliveries}}" as="e" hint-placeholder-count="6">
+            <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid {{c.line}}">
+              <span aria-hidden="true" style="flex: none; width: 36px; height: 36px; border-radius: 11px; background: {{c.purpleSoftBg}}; color: {{c.purpleSoftFg}}; display: inline-flex; align-items: center; justify-content: center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.2-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4Z"></path></svg>
+              </span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+                <span style="font-size: 13px; font-weight: 700">{{e.name}}</span>
+                <span style="font-size: 12px; color: {{c.ink2}}">{{e.when}} · {{e.due}}</span>
+              </span>
+              <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 8px; background: {{e.tagBg}}; color: {{e.tagFg}}; font-size: 11px; font-weight: 700; white-space: nowrap">{{e.tag}}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </div>
+
+  </main>
+
+  <sc-if value="{{modalOpen}}" hint-placeholder-val="{{false}}">
+    <div style="position: fixed; inset: 0; z-index: 50; background: {{c.scrim}}; backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px">
+      <div role="dialog" aria-modal="true" aria-labelledby="nt-title" style="width: 100%; max-width: 520px; max-height: 100%; overflow: auto; background: {{c.card}}; border: 1px solid {{c.border}}; border-radius: 24px; padding: 28px; box-shadow: 0 30px 60px rgba(20,8,50,0.30); display: flex; flex-direction: column; gap: 18px">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 14px; background: {{c.modalTileBg}}; color: {{c.purpleSoftFg}}; display: inline-flex; align-items: center; justify-content: center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            </span>
+            <div style="display: flex; flex-direction: column">
+              <h2 id="nt-title" style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.02em">Nova tarefa</h2>
+              <span style="font-size: 13px; color: {{c.ink2}}">Defina prazo, lembrete e prioridade</span>
+            </div>
+          </div>
+          <button type="button" onClick="{{closeModal}}" aria-label="Fechar" style="width: 40px; height: 40px; border-radius: 12px; border: 1px solid {{c.border}}; background: {{c.card}}; color: {{c.ink}}; display: inline-flex; align-items: center; justify-content: center">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="nt-nome" style="font-size: 13px; font-weight: 700">Nome da tarefa</label>
+          <input id="nt-nome" type="text" value="{{form.name}}" onChange="{{onName}}" placeholder="Ex.: Revisar proposta do cliente" style="height: 50px; padding: 0 16px; border: 1px solid {{c.fieldBorder}}; border-radius: 14px; background: {{c.field}}; color: {{c.ink}}; font-size: 14px">
+          <sc-if value="{{hasFormError}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 12px; font-weight: 700; color: {{c.pinkSoftFg}}">{{formError}}</span>
+          </sc-if>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <label for="nt-data" style="font-size: 13px; font-weight: 700">Prazo</label>
+            <input id="nt-data" type="date" value="{{form.date}}" onChange="{{onDate}}" style="height: 50px; padding: 0 14px; border: 1px solid {{c.fieldBorder}}; border-radius: 14px; background: {{c.field}}; color: {{c.ink}}; font-size: 14px">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <label for="nt-hora" style="font-size: 13px; font-weight: 700">Horário</label>
+            <select id="nt-hora" value="{{form.time}}" onChange="{{onTime}}" style="height: 50px; padding: 0 14px; border: 1px solid {{c.fieldBorder}}; border-radius: 14px; background: {{c.field}}; color: {{c.ink}}; font-size: 14px">
+              <sc-for list="{{timeOptions}}" as="to" hint-placeholder-count="6">
+                <option value="{{to.value}}">{{to.label}}</option>
+              </sc-for>
+            </select>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="nt-lembrete" style="font-size: 13px; font-weight: 700">Lembrete</label>
+          <select id="nt-lembrete" value="{{form.reminder}}" onChange="{{onReminder}}" style="height: 50px; padding: 0 14px; border: 1px solid {{c.fieldBorder}}; border-radius: 14px; background: {{c.field}}; color: {{c.ink}}; font-size: 14px">
+            <option value="">Sem lembrete</option>
+            <option value="15">15 minutos antes</option>
+            <option value="30">30 minutos antes</option>
+            <option value="60">1 hora antes</option>
+            <option value="1d">1 dia antes</option>
+          </select>
+          <sc-if value="{{noTimeHint}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 12px; color: {{c.ink2}}">Sem horário definido, o lembrete toca às 09:00 do dia do prazo.</span>
+          </sc-if>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span id="nt-prio" style="font-size: 13px; font-weight: 700">Prioridade</span>
+          <div role="group" aria-labelledby="nt-prio" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+            <sc-for list="{{prioOpts}}" as="o" hint-placeholder-count="3">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="min-height: 46px; border-radius: 14px; border: 1.5px solid {{o.bd}}; background: {{o.bg}}; color: {{o.fg}}; font-size: 14px; font-weight: 700">{{o.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="nt-proj" style="font-size: 13px; font-weight: 700">Projeto (opcional)</label>
+          <select id="nt-proj" value="{{form.project}}" onChange="{{onProject}}" style="height: 50px; padding: 0 14px; border: 1px solid {{c.fieldBorder}}; border-radius: 14px; background: {{c.field}}; color: {{c.ink}}; font-size: 14px">
+            <option value="">Sem projeto</option>
+            <option value="App de avaliação v2">App de avaliação v2</option>
+            <option value="Painel do lojista">Painel do lojista</option>
+            <option value="Integração de parceiros">Integração de parceiros</option>
+            <option value="Migração de pagamentos">Migração de pagamentos</option>
+          </select>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding-top: 4px">
+          <button type="button" onClick="{{closeModal}}" style="min-height: 48px; padding: 0 22px; border-radius: 14px; border: 1px solid {{c.fieldBorder}}; background: {{c.card}}; color: {{c.ink}}; font-size: 14px; font-weight: 700">Cancelar</button>
+          <button type="button" onClick="{{save}}" style="min-height: 48px; padding: 0 24px; border-radius: 14px; border: 0; background: linear-gradient(90deg, #DB2777, #7C3AED); color: #FFFFFF; font-size: 14px; font-weight: 700; box-shadow: 0 10px 22px rgba(124,58,237,0.28)">Salvar tarefa</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tema":{"editor":"enum","options":["claro","escuro"],"default":"claro"},"$preview":{"width":1440,"height":2480}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const T = '2026-11-02';
+    const mk = (id, name, date, time, priority, reminder, status, deliveredAt, project) => ({ id: id, name: name, date: date, time: time, priority: priority, reminder: reminder || '', status: status || 'todo', deliveredAt: deliveredAt || '', project: project || '' });
+    this.blankForm = { name: '', date: T, time: '18:00', reminder: '30', priority: 'media', project: '' };
+    this.state = {
+      theme: props.tema === 'escuro' ? 'escuro' : 'claro',
+      modalOpen: false, query: '', taskFilter: 'all',
+      form: Object.assign({}, this.blankForm), formError: '',
+      selDate: T, monthOffset: 0, dismissed: {}, snoozed: {},
+      tasks: [
+        mk('t1', 'Revisar PR do fluxo de checkout', T, '10:00', 'alta', '09:45', 'done', '2026-11-02T09:52', 'App de avaliação v2'),
+        mk('t2', 'Daily com o time de produto', T, '09:30', 'media', '', 'done', '2026-11-02T09:41', ''),
+        mk('t3', 'Escrever specs da tela de avaliação', T, '12:00', 'alta', '11:30', 'doing', '', 'App de avaliação v2'),
+        mk('t4', 'Responder feedback do design review', T, '15:00', 'media', '14:30', 'todo', '', 'Painel do lojista'),
+        mk('t5', 'Validar métricas do experimento A/B', T, '16:00', 'alta', '15:30', 'doing', '', 'Painel do lojista'),
+        mk('t6', 'Atualizar roadmap do trimestre', T, '', 'baixa', '', 'todo', '', ''),
+        mk('t7', 'Enviar resumo semanal ao gestor', T, '18:00', 'media', '17:30', 'todo', '', ''),
+        mk('o1', 'Documentar regras de negócio do Boost', '2026-10-29', '18:00', 'alta', '', 'doing', '', 'Integração de parceiros'),
+        mk('o2', 'Revisar contrato do fornecedor de logística', '2026-10-30', '17:00', 'media', '', 'todo', '', ''),
+        mk('p1', 'Fechar escopo da sprint 23', '2026-10-30', '18:00', 'alta', '', 'done', '2026-10-30T17:40', ''),
+        mk('p2', 'Revisar métricas de conversão', '2026-10-30', '16:00', 'media', '', 'done', '2026-10-30T15:12', 'Painel do lojista'),
+        mk('p3', 'Publicar changelog da versão 2.4', '2026-10-29', '18:00', 'baixa', '', 'done', '2026-10-29T18:05', ''),
+        mk('p4', 'Alinhar handoff com o design', '2026-10-28', '17:00', 'media', '', 'done', '2026-10-29T10:20', 'App de avaliação v2'),
+        mk('p5', 'Priorizar bugs do painel', '2026-10-27', '12:00', 'alta', '', 'done', '2026-10-27T11:48', 'Painel do lojista'),
+        mk('f1', 'Planejamento da sprint 24', '2026-11-03', '10:00', 'alta', '09:30'),
+        mk('f2', 'Revisar wireframes do onboarding', '2026-11-03', '14:00', 'media', '13:30', 'todo', '', 'App de avaliação v2'),
+        mk('f3', '1:1 com a liderança', '2026-11-03', '16:00', 'media'),
+        mk('f4', 'Atualizar documentação da API', '2026-11-03', '', 'baixa', '', 'todo', '', 'Integração de parceiros'),
+        mk('f5', 'Apresentar resultados do A/B', '2026-11-04', '10:00', 'alta', '09:30', 'todo', '', 'Painel do lojista'),
+        mk('f6', 'Refinar backlog com o time', '2026-11-04', '11:00', 'media'),
+        mk('f7', 'Responder chamados do suporte', '2026-11-04', '', 'baixa'),
+        mk('f8', 'Alinhar escopo com o jurídico', '2026-11-04', '15:30', 'media', '', 'todo', '', 'Migração de pagamentos'),
+        mk('f9', 'Testar build de homologação', '2026-11-04', '17:00', 'alta', '16:30', 'todo', '', 'App de avaliação v2'),
+        mk('f10', 'Workshop de discovery', '2026-11-05', '10:00', 'alta', '09:30'),
+        mk('f11', 'Revisar OKRs do trimestre', '2026-11-05', '15:00', 'media'),
+        mk('f12', 'Preparar feedbacks de 1:1', '2026-11-05', '17:00', 'baixa'),
+        mk('f13', 'Retrospectiva da sprint', '2026-11-06', '10:00', 'media'),
+        mk('f14', 'Enviar relatório mensal', '2026-11-06', '12:00', 'alta', '11:00'),
+        mk('f15', 'Organizar pendências da semana', '2026-11-06', '', 'baixa'),
+        mk('f16', 'Demo para stakeholders', '2026-11-06', '17:00', 'alta', '16:00', 'todo', '', 'App de avaliação v2'),
+        mk('f17', 'Revisar plano de testes', '2026-11-10', '11:00', 'media', '', 'todo', '', 'Migração de pagamentos'),
+        mk('f18', 'Kickoff com parceiro de integração', '2026-11-10', '15:00', 'alta', '', 'todo', '', 'Integração de parceiros'),
+        mk('f19', 'Validar entrega do painel', '2026-11-13', '10:00', 'alta', '09:00', 'todo', '', 'Painel do lojista'),
+        mk('f20', 'Revisar métricas mensais', '2026-11-17', '14:00', 'media'),
+        mk('f21', 'Entrega final do app v2', '2026-11-20', '18:00', 'alta', '17:00', 'todo', '', 'App de avaliação v2'),
+        mk('f22', 'Planejamento de dezembro', '2026-11-24', '10:00', 'media'),
+        mk('f23', 'Revisão de orçamento', '2026-11-26', '15:00', 'alta')
+      ]
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.tema !== this.props.tema && this.props.tema) {
+      this.setState({ theme: this.props.tema === 'escuro' ? 'escuro' : 'claro' });
+    }
+  }
+
+  setStatus(id, status) {
+    const now = new Date();
+    const p2 = (n) => String(n).padStart(2, '0');
+    const stamp = '2026-11-02T' + p2(now.getHours()) + ':' + p2(now.getMinutes());
+    this.setState({
+      tasks: this.state.tasks.map((t) => {
+        if (t.id !== id) return t;
+        const deliveredAt = status === 'done' ? (t.status === 'done' ? t.deliveredAt : stamp) : '';
+        return Object.assign({}, t, { status: status, deliveredAt: deliveredAt });
+      })
+    });
+  }
+
+  renderVals() {
+    const TODAY = '2026-11-02';
+    const st = this.state;
+    const dark = st.theme === 'escuro';
+    const tasks = st.tasks;
+    const L = (light, darkV) => dark ? darkV : light;
+
+    const c = {
+      scheme: L('light', 'dark'),
+      pageBg: L('linear-gradient(160deg, #FBF8FF 0%, #F4EEFC 45%, #FDF1F8 100%)', 'linear-gradient(160deg, #0E0A1C 0%, #130C28 50%, #1A0E24 100%)'),
+      navBg: L('rgba(255,255,255,0.82)', 'rgba(26,19,48,0.88)'),
+      card: L('#FFFFFF', '#17112B'),
+      border: L('#EFEAF8', '#2A2244'),
+      shadow: L('0 10px 30px rgba(76,29,149,0.06)', '0 10px 30px rgba(0,0,0,0.35)'),
+      shadowSm: L('0 6px 18px rgba(76,29,149,0.05)', '0 6px 18px rgba(0,0,0,0.30)'),
+      ink: L('#1F1147', '#F3F0FF'),
+      ink2: L('#4B4563', '#C9C2E0'),
+      muted: L('#6B6585', '#A79FC2'),
+      subtle: L('#F6F3FC', '#221A3B'),
+      thead: L('#F8F5FD', '#1F1838'),
+      line: L('#F1EDF8', '#2A2244'),
+      field: L('#FAF8FE', '#1F1838'),
+      fieldBorder: L('#E7E1F5', '#3A2F5E'),
+      track: L('#F1ECFA', '#2A2244'),
+      donutTrack: L('#F4F0FB', '#241C3F'),
+      navActiveBg: L('linear-gradient(90deg, #FBD5EC, #E9DDFD)', 'linear-gradient(90deg, rgba(236,72,153,0.30), rgba(139,92,246,0.30))'),
+      navActiveFg: L('#3B0764', '#FBE7F6'),
+      promoBg: L('linear-gradient(160deg, #FFF5FB, #F3EDFF)', 'linear-gradient(160deg, #2A1735, #1F1840)'),
+      promoBorder: L('#F3E4F7', '#3A2752'),
+      pinkSoftBg: L('#FCE7F3', 'rgba(236,72,153,0.18)'),
+      pinkSoftFg: L('#BE185D', '#F9A8D4'),
+      purpleSoftBg: L('#F3EDFF', 'rgba(139,92,246,0.20)'),
+      purpleSoftFg: L('#6D28D9', '#C4B5FD'),
+      modalTileBg: L('linear-gradient(135deg, #FBCFE8, #DDD6FE)', 'linear-gradient(135deg, rgba(236,72,153,0.25), rgba(139,92,246,0.25))'),
+      accentText: L('#6D28D9', '#C4B5FD'),
+      panel: L('#FAF8FE', '#1F1838'),
+      remHi: L('linear-gradient(135deg, #FDE7F3, #EDE5FF)', 'linear-gradient(135deg, #3A1A35, #2A2050)'),
+      lateBg: L('#FFEDD5', 'rgba(249,115,22,0.18)'),
+      lateFg: L('#C2410C', '#FDBA74'),
+      lateIcon: L('#EA580C', '#FDBA74'),
+      lateItemBg: L('#FFF9F5', 'rgba(249,115,22,0.07)'),
+      lateItemBorder: L('#FDE6D6', 'rgba(249,115,22,0.28)'),
+      avatarBg: L('#EDE9FE', '#2E2550'),
+      avatarFg: L('#5B21B6', '#C4B5FD'),
+      scrim: L('rgba(31,17,71,0.32)', 'rgba(0,0,0,0.60)')
+    };
+
+    const p2 = (n) => String(n).padStart(2, '0');
+    const DOW = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const DOWS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const MON = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+    const MONS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    const parse = (s) => { const a = s.split('-').map(Number); return new Date(a[0], a[1] - 1, a[2]); };
+    const iso = (d) => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+    const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+    const diff = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
+    const longDate = (s) => { const d = parse(s); return DOW[d.getDay()] + ', ' + d.getDate() + ' de ' + MON[d.getMonth()]; };
+    const shortDate = (s) => { const d = parse(s); return DOWS[d.getDay()] + ', ' + p2(d.getDate()) + '/' + p2(d.getMonth() + 1); };
+    const shift = (time, mins) => { const a = time.split(':').map(Number); let x = a[0] * 60 + a[1] + mins; x = Math.max(0, Math.min(23 * 60 + 59, x)); return p2(Math.floor(x / 60)) + ':' + p2(x % 60); };
+    const sortKey = (t) => t.time || '99:99';
+    const byTime = (a, b) => sortKey(a).localeCompare(sortKey(b));
+    const dueStamp = (t) => t.date + 'T' + (t.time || '23:59');
+    const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+    const countDone = (l) => l.filter((t) => t.status === 'done').length;
+    const pctOf = (a, b) => b ? Math.round(a / b * 100) : 0;
+
+    const PRIO = {
+      alta: { label: 'Alta', bg: L('#FCE7F3', 'rgba(236,72,153,0.18)'), fg: L('#BE185D', '#F9A8D4'), bd: L('#F9A8D4', '#BE185D'), tile: 'linear-gradient(135deg, #F9A8D4, #DB2777)' },
+      media: { label: 'Média', bg: L('#EDE9FE', 'rgba(139,92,246,0.20)'), fg: L('#6D28D9', '#C4B5FD'), bd: L('#C4B5FD', '#7C3AED'), tile: 'linear-gradient(135deg, #C4B5FD, #7C3AED)' },
+      baixa: { label: 'Baixa', bg: L('#DBEAFE', 'rgba(59,130,246,0.20)'), fg: L('#1D4ED8', '#93C5FD'), bd: L('#93C5FD', '#2563EB'), tile: 'linear-gradient(135deg, #BFDBFE, #3B82F6)' }
+    };
+    const SC = { todo: [L('#FFFFFF', '#2E2550'), c.ink], doing: [L('#EDE9FE', 'rgba(139,92,246,0.30)'), L('#5B21B6', '#DDD6FE')], done: [L('#DCFCE7', 'rgba(34,197,94,0.20)'), L('#15803D', '#86EFAC')] };
+    const STATUS = { todo: 'A fazer', doing: 'Em andamento', done: 'Concluída' };
+    const PILL = { todo: [L('#F3F1F8', 'rgba(255,255,255,0.07)'), c.ink2], doing: [L('#EDE9FE', 'rgba(139,92,246,0.22)'), L('#6D28D9', '#C4B5FD')], done: [L('#DCFCE7', 'rgba(34,197,94,0.18)'), L('#15803D', '#86EFAC')], late: [c.lateBg, c.lateFg] };
+    const SHADOW = L('0 2px 6px rgba(76,29,149,0.10)', '0 2px 6px rgba(0,0,0,0.35)');
+    const okBg = PILL.done[0], okFg = PILL.done[1];
+
+    const view = (t, i) => {
+      const done = t.status === 'done';
+      const dd = done && t.deliveredAt ? t.deliveredAt.slice(0, 10) : '';
+      const dt = done && t.deliveredAt ? t.deliveredAt.slice(11, 16) : '';
+      const late = done && t.deliveredAt > dueStamp(t);
+      const lateDays = diff(t.date, TODAY);
+      const overdue = !done && t.date < TODAY;
+      const pill = overdue ? PILL.late : PILL[t.status];
+      return Object.assign({}, t, {
+        num: (i || 0) + 1,
+        pb: PRIO[t.priority],
+        projectLabel: t.project || 'Pessoal',
+        timeLabel: t.time || 'Sem horário',
+        timeShort: t.time || '—',
+        reminderLabel: t.reminder ? t.reminder : '—',
+        deco: done ? 'line-through' : 'none',
+        nameColor: done ? c.muted : c.ink,
+        deliveredShort: done ? (dd === TODAY ? 'Hoje, ' + dt : shortDate(dd) + ', ' + dt) + (late ? ' · atraso' : '') : 'Pendente',
+        dBg: done ? (late ? c.lateBg : okBg) : PILL.todo[0],
+        dFg: done ? (late ? c.lateFg : okFg) : c.ink2,
+        lateLabel: 'Venceu ' + shortDate(t.date) + ' · ' + plural(lateDays, 'dia', 'dias') + ' de atraso',
+        calStatus: overdue ? 'Atrasada' : STATUS[t.status],
+        stBg: pill[0], stFg: pill[1],
+        opts: ['todo', 'doing', 'done'].map((k) => {
+          const on = t.status === k;
+          return { label: STATUS[k], pressed: on, bg: on ? SC[k][0] : 'transparent', fg: on ? SC[k][1] : c.muted, shadow: on ? SHADOW : 'none', pick: () => this.setStatus(t.id, k) };
+        })
+      });
+    };
+
+    const todayAll = tasks.filter((t) => t.date === TODAY).sort(byTime);
+    const overdueRaw = tasks.filter((t) => t.date < TODAY && t.status !== 'done').sort((a, b) => a.date.localeCompare(b.date));
+    const overdue = overdueRaw.map((t, i) => view(t, i));
+    const stats = (l) => { const done = countDone(l); const doing = l.filter((t) => t.status === 'doing').length; return { total: l.length, done: done, doing: doing, todo: l.length - done - doing, pct: pctOf(done, l.length) }; };
+    const day = stats(todayAll);
+    const weekDates = [0, 1, 2, 3, 4].map((i) => addDays(TODAY, i));
+    const week = stats(tasks.filter((t) => t.date >= weekDates[0] && t.date <= weekDates[4]));
+
+    const C = 2 * Math.PI * 72;
+    const makeDonut = (s, title, subtitle, colors) => {
+      const parts = [['Entregues', s.done, colors[0]], ['Em andamento', s.doing, colors[1]], ['A fazer', s.todo, colors[2]]];
+      let off = 0;
+      const segs = [];
+      parts.forEach((p) => {
+        if (!s.total || !p[1]) return;
+        const len = p[1] / s.total * C;
+        const gap = p[1] === s.total ? 0 : 4;
+        segs.push({ color: p[2], dash: Math.max(0, len - gap).toFixed(1) + ' ' + C.toFixed(1), offset: (-off).toFixed(1) });
+        off += len;
+      });
+      return {
+        title: title, subtitle: subtitle, pct: s.pct, total: s.total, segs: segs,
+        legend: parts.map((p) => ({ label: p[0], value: p[1], pct: pctOf(p[1], s.total) + '%', color: p[2] })),
+        aria: title + ': ' + s.pct + '% entregue, ' + s.done + ' de ' + s.total + ' tarefas'
+      };
+    };
+    const wS = parse(weekDates[0]), wE = parse(weekDates[4]);
+    const donutCards = [
+      makeDonut(day, 'Progresso de hoje', 'Percentual das tarefas do dia', ['#8B5CF6', '#EC4899', '#FDBA74']),
+      makeDonut(week, 'Progresso da semana', 'Tarefas de ' + wS.getDate() + ' a ' + wE.getDate() + ' de ' + MON[wE.getMonth()], ['#4F46E5', '#38BDF8', L('#C7D2FE', '#A5B4FC')])
+    ];
+
+    const q = (st.query || '').trim().toLowerCase();
+    const counts = { all: day.total, todo: day.todo, doing: day.doing, done: day.done };
+    const filterTabs = [['all', 'Todas'], ['todo', 'A fazer'], ['doing', 'Em andamento'], ['done', 'Concluídas']].map((f) => {
+      const on = st.taskFilter === f[0];
+      return { label: f[1], count: counts[f[0]], pressed: on, bg: on ? L('#FFFFFF', '#2E2550') : 'transparent', fg: on ? c.pinkSoftFg : c.ink2, shadow: on ? SHADOW : 'none', pick: () => this.setState({ taskFilter: f[0] }) };
+    });
+    const tableTasks = todayAll.filter((t) => (st.taskFilter === 'all' || t.status === st.taskFilter) && (!q || t.name.toLowerCase().indexOf(q) >= 0 || t.project.toLowerCase().indexOf(q) >= 0)).map((t, i) => view(t, i));
+
+    const pending = todayAll.filter((t) => t.reminder && t.status !== 'done' && !st.dismissed[t.id]).sort((a, b) => a.reminder.localeCompare(b.reminder));
+    const next = pending[0];
+    const reminders = todayAll.filter((t) => t.reminder).sort((a, b) => a.reminder.localeCompare(b.reminder)).map((t) => {
+      const done = t.status === 'done';
+      const dis = !!st.dismissed[t.id];
+      const offR = done || dis;
+      return { time: t.reminder, name: t.name, state: done ? 'Entregue' : (dis ? 'Dispensado' : (st.snoozed[t.id] ? 'Adiado' : 'Agendado')), chipBg: offR ? PILL.todo[0] : c.pinkSoftBg, chipFg: offR ? c.ink2 : c.pinkSoftFg, deco: offR ? 'line-through' : 'none', nameColor: offR ? c.muted : c.ink };
+    });
+
+    const base = new Date(2026, 10 + st.monthOffset, 1);
+    const y = base.getFullYear();
+    const m = base.getMonth();
+    const lead = (base.getDay() + 6) % 7;
+    const dim = new Date(y, m + 1, 0).getDate();
+    const cellsN = Math.ceil((lead + dim) / 7) * 7;
+    const calCells = [];
+    for (let i = 0; i < cellsN; i++) {
+      const d = new Date(y, m, 1 - lead + i);
+      const ds = iso(d);
+      const inMonth = d.getMonth() === m;
+      const list = tasks.filter((t) => t.date === ds);
+      const sel = ds === st.selDate;
+      const isToday = ds === TODAY;
+      calCells.push({
+        day: d.getDate(), selected: sel,
+        dots: list.slice(0, 3).map((t) => ({ color: sel ? '#FFFFFF' : (t.status === 'done' ? '#8B5CF6' : (ds < TODAY ? '#EA580C' : '#EC4899')) })),
+        bg: sel ? 'linear-gradient(135deg, #DB2777, #7C3AED)' : (isToday ? L('#F5F0FF', '#2A2050') : 'transparent'),
+        color: sel ? '#FFFFFF' : (inMonth ? c.ink : c.muted),
+        border: sel ? 'transparent' : (isToday ? '#A78BFA' : 'transparent'),
+        weight: (isToday || sel) ? '800' : (inMonth ? '600' : '400'),
+        aria: d.getDate() + ' de ' + MON[d.getMonth()] + (isToday ? ' (hoje)' : '') + ', ' + plural(list.length, 'tarefa', 'tarefas'),
+        pick: () => this.setState({ selDate: ds })
+      });
+    }
+    const selTasks = tasks.filter((t) => t.date === st.selDate).sort(byTime).map((t, i) => view(t, i));
+
+    const PROJ = [
+      { name: 'App de avaliação v2', key: 'AVA', start: '2026-09-21', due: '2026-11-20', done: 34, total: 50, people: ['AS', 'RL', 'MC', 'JP'], tile: 'linear-gradient(135deg, #F9A8D4, #DB2777)' },
+      { name: 'Painel do lojista', key: 'LOJ', start: '2026-09-07', due: '2026-11-13', done: 23, total: 27, people: ['BF', 'TK'], tile: 'linear-gradient(135deg, #C4B5FD, #7C3AED)' },
+      { name: 'Integração de parceiros via API', key: 'API', start: '2026-10-05', due: '2026-12-04', done: 12, total: 29, people: ['DM', 'LS', 'RG'], tile: 'linear-gradient(135deg, #BFDBFE, #3B82F6)' },
+      { name: 'Migração de pagamentos', key: 'PAG', start: '2026-10-01', due: '2026-12-18', done: 5, total: 23, people: ['CN', 'VA'], tile: 'linear-gradient(135deg, #FDBA74, #EA580C)' }
+    ];
+    const projects = PROJ.map((p) => {
+      const pct = pctOf(p.done, p.total);
+      const exp = Math.round(Math.min(1, Math.max(0, diff(p.start, TODAY) / diff(p.start, p.due))) * 100);
+      const on = pct >= exp - 10;
+      const due = parse(p.due);
+      return Object.assign({}, p, {
+        pct: pct, remaining: 100 - pct, pctW: pct + '%',
+        dueLabel: p2(due.getDate()) + '/' + p2(due.getMonth() + 1) + '/' + due.getFullYear(),
+        daysLabel: 'em ' + plural(diff(TODAY, p.due), 'dia', 'dias'),
+        statusLabel: on ? 'No ritmo' : 'Abaixo do ritmo',
+        stBg: on ? okBg : c.lateBg, stFg: on ? okFg : c.lateFg
+      });
+    });
+
+    const deliveries = tasks.filter((t) => t.status === 'done' && t.deliveredAt).sort((a, b) => b.deliveredAt.localeCompare(a.deliveredAt)).slice(0, 7).map((t) => {
+      const dd = t.deliveredAt.slice(0, 10);
+      const late = t.deliveredAt > dueStamp(t);
+      const dueD = parse(t.date);
+      return { name: t.name, when: (dd === TODAY ? 'Hoje' : shortDate(dd)) + ', ' + t.deliveredAt.slice(11, 16), due: 'prazo ' + p2(dueD.getDate()) + '/' + p2(dueD.getMonth() + 1) + (t.time ? ' ' + t.time : ''), tag: late ? 'Com atraso' : 'No prazo', tagBg: late ? c.lateBg : okBg, tagFg: late ? c.lateFg : okFg };
+    });
+
+    const oldest = overdueRaw.length ? diff(overdueRaw[0].date, TODAY) : 0;
+    const kpis = [
+      { label: 'Tarefas de hoje', value: day.total, noteStrong: plural(day.total - day.done, 'aberta', 'abertas'), note: 'até o fim do dia', noteColor: c.ink, tileBg: L('linear-gradient(135deg, #EDE9FE, #DDD6FE)', 'rgba(139,92,246,0.20)'), tileFg: L('#7C3AED', '#C4B5FD'), iList: true, iCheck: false, iPlay: false, iAlert: false },
+      { label: 'Entregues hoje', value: day.done, noteStrong: '↑ ' + day.pct + '%', note: 'do dia concluído', noteColor: okFg, tileBg: L('linear-gradient(135deg, #F3E8FF, #E9D5FF)', 'rgba(168,85,247,0.20)'), tileFg: L('#9333EA', '#D8B4FE'), iList: false, iCheck: true, iPlay: false, iAlert: false },
+      { label: 'Em andamento', value: day.doing, noteStrong: plural(day.todo, 'tarefa', 'tarefas'), note: 'ainda a começar', noteColor: c.ink, tileBg: L('linear-gradient(135deg, #FCE7F3, #FBCFE8)', 'rgba(236,72,153,0.20)'), tileFg: L('#DB2777', '#F9A8D4'), iList: false, iCheck: false, iPlay: true, iAlert: false },
+      { label: 'Atrasadas', value: overdueRaw.length, noteStrong: overdueRaw.length ? 'há ' + plural(oldest, 'dia', 'dias') : 'nenhuma', note: overdueRaw.length ? 'a mais antiga' : 'pendente', noteColor: c.lateFg, tileBg: L('linear-gradient(135deg, #FFEDD5, #FED7AA)', 'rgba(249,115,22,0.20)'), tileFg: L('#EA580C', '#FDBA74'), iList: false, iCheck: false, iPlay: false, iAlert: true }
+    ];
+
+    const themeOpts = [['claro', 'Claro'], ['escuro', 'Escuro']].map((o) => {
+      const on = st.theme === o[0];
+      return { label: o[1], pressed: on, isSun: o[0] === 'claro', isMoon: o[0] === 'escuro', bg: on ? 'linear-gradient(90deg, #DB2777, #7C3AED)' : 'transparent', fg: on ? '#FFFFFF' : c.ink2, pick: () => this.setState({ theme: o[0] }) };
+    });
+
+    const timeOptions = [{ value: '', label: 'Sem horário definido' }];
+    for (let h = 7; h <= 22; h++) { ['00', '30'].forEach((mm) => { if (h === 22 && mm === '30') return; const v = p2(h) + ':' + mm; timeOptions.push({ value: v, label: v }); }); }
+
+    const hr = new Date().getHours();
+    const f = st.form;
+    const setF = (k) => (e) => { const v = e.target.value; this.setState({ form: Object.assign({}, this.state.form, { [k]: v }), formError: k === 'name' ? '' : this.state.formError }); };
+    const dToday = parse(TODAY);
+
+    return {
+      c: c, themeOpts: themeOpts,
+      greeting: (hr < 12 ? 'Bom dia' : (hr < 18 ? 'Boa tarde' : 'Boa noite')) + ', bem-vindo de volta',
+      todayLabel: DOWS[dToday.getDay()] + ', ' + dToday.getDate() + ' ' + MONS[dToday.getMonth()] + ' ' + dToday.getFullYear(),
+      query: st.query, onQuery: (e) => this.setState({ query: e.target.value }),
+      kpis: kpis, donutCards: donutCards,
+      showBanner: !!next,
+      pendingLabel: plural(pending.length, 'pendente', 'pendentes'),
+      banner: next ? { name: next.name, reminder: next.reminder, dueLabel: next.time ? 'Prazo hoje às ' + next.time : 'Prazo hoje, sem horário definido' } : { name: '', reminder: '', dueLabel: '' },
+      snooze: () => { if (!next) return; this.setState({ tasks: this.state.tasks.map((t) => t.id === next.id ? Object.assign({}, t, { reminder: shift(t.reminder, 15) }) : t), snoozed: Object.assign({}, this.state.snoozed, { [next.id]: true }) }); },
+      dismiss: () => { if (!next) return; this.setState({ dismissed: Object.assign({}, this.state.dismissed, { [next.id]: true }) }); },
+      filterTabs: filterTabs, tableTasks: tableTasks, tableEmpty: tableTasks.length === 0,
+      overdue: overdue, noOverdue: overdue.length === 0, overdueCountLabel: plural(overdue.length, 'tarefa', 'tarefas'),
+      reminders: reminders, noReminders: reminders.length === 0,
+      calCells: calCells, monthLabel: MON[m].charAt(0).toUpperCase() + MON[m].slice(1) + ' de ' + y,
+      prevMonth: () => this.setState({ monthOffset: this.state.monthOffset - 1 }),
+      nextMonth: () => this.setState({ monthOffset: this.state.monthOffset + 1 }),
+      selLabel: (st.selDate === TODAY ? 'Hoje · ' : '') + longDate(st.selDate),
+      selCount: plural(selTasks.length, 'tarefa', 'tarefas'), selTasks: selTasks, selEmpty: selTasks.length === 0,
+      projects: projects, deliveries: deliveries,
+      modalOpen: st.modalOpen,
+      openModal: () => this.setState({ modalOpen: true, form: Object.assign({}, this.blankForm), formError: '' }),
+      closeModal: () => this.setState({ modalOpen: false }),
+      form: f, formError: st.formError, hasFormError: !!st.formError,
+      timeOptions: timeOptions,
+      noTimeHint: !f.time && !!f.reminder && f.reminder !== '1d',
+      onName: setF('name'), onDate: setF('date'), onTime: setF('time'), onReminder: setF('reminder'), onProject: setF('project'),
+      prioOpts: ['alta', 'media', 'baixa'].map((k) => {
+        const on = f.priority === k;
+        const pr = PRIO[k];
+        return { label: pr.label, pressed: on, bg: on ? pr.bg : c.card, fg: on ? pr.fg : c.ink2, bd: on ? pr.bd : c.fieldBorder, pick: () => this.setState({ form: Object.assign({}, this.state.form, { priority: k }) }) };
+      }),
+      save: () => {
+        const fm = this.state.form;
+        if (!fm.name.trim()) { this.setState({ formError: 'Dê um nome para a tarefa.' }); return; }
+        const time = fm.time || '';
+        const date = fm.date || TODAY;
+        const mins = { '15': 15, '30': 30, '60': 60 }[fm.reminder];
+        const reminder = mins ? (time ? shift(time, -mins) : '09:00') : '';
+        const t = { id: 'n' + Date.now(), name: fm.name.trim(), date: date, time: time, priority: fm.priority, reminder: reminder, status: 'todo', deliveredAt: '', project: fm.project };
+        const nd = parse(date);
+        this.setState({ tasks: this.state.tasks.concat([t]), modalOpen: false, formError: '', selDate: date, monthOffset: (nd.getFullYear() - 2026) * 12 + nd.getMonth() - 10 });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

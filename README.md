@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dashboard de tarefas + projetos do time (Linear)
 
-## Getting Started
+App pessoal em português do Brasil (fuso America/Sao_Paulo). Veja `CLAUDE.md` para escopo, regras e ordem de trabalho.
 
-First, run the development server:
+## Como rodar
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Outros comandos: `npm run build`, `npm run lint`, `npx tsc --noEmit`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estado
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Etapa 1 (Base) concluída**: layout completo do design, temas claro/escuro e dados de exemplo em memória
+(nada é salvo ao recarregar). Próximas: banco de dados (2), testes (3), Linear (4), lembretes (5), deploy (6).
 
-## Learn More
+## Estrutura
 
-To learn more about Next.js, take a look at the following resources:
+- `app/` – layout raiz (fonte, script de tema), `globals.css` com os tokens de tema
+- `components/` – blocos da interface
+- `lib/` – regras puras de datas, lembretes, atraso e progresso (a cobrir com Vitest na etapa 3)
+- `design/` – referência visual aprovada (`.dc.html`, só leitura)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Decisões
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Semana do progresso: segunda a sexta da semana corrente.
+- Linear: time Partner; `% entregue` = issues concluídas ÷ total.
+- Lembretes com o app fechado: Web Push.
+- Hospedagem e login: a decidir antes da etapa 6.

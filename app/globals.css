@@ -1,26 +1,318 @@
 @import "tailwindcss";
 
+/*
+ * Tokens de tema. Os valores vêm do objeto `c` de renderVals() em
+ * design/dashboard-referencia.dc.html (claro e escuro). Os componentes só
+ * referenciam estes tokens; nenhum componente repete cor de tema.
+ * O tema ativo é `data-theme` em <html> ("light" | "dark"), definido por um
+ * script inline no <head> antes da primeira pintura (ver app/layout.tsx).
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  --page-bg: linear-gradient(160deg, #fbf8ff 0%, #f4eefc 45%, #fdf1f8 100%);
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  --card: #ffffff;
+  --border: #efeaf8;
+  --shadow: 0 10px 30px rgba(76, 29, 149, 0.06);
+  --shadow-sm: 0 6px 18px rgba(76, 29, 149, 0.05);
+  --seg-shadow: 0 2px 6px rgba(76, 29, 149, 0.1);
+
+  --ink: #1f1147;
+  --ink-2: #4b4563;
+  --muted: #6b6585;
+  --subtle: #f6f3fc;
+  --thead: #f8f5fd;
+  --line: #f1edf8;
+  --field: #faf8fe;
+  --field-border: #e7e1f5;
+  --track: #f1ecfa;
+  --donut-track: #f4f0fb;
+  --panel: #faf8fe;
+  --scrim: rgba(31, 17, 71, 0.32);
+
+  --nav-active-bg: linear-gradient(90deg, #fbd5ec, #e9ddfd);
+  --nav-active-fg: #3b0764;
+  --promo-bg: linear-gradient(160deg, #fff5fb, #f3edff);
+  --promo-border: #f3e4f7;
+  --modal-tile-bg: linear-gradient(135deg, #fbcfe8, #ddd6fe);
+  --rem-hi: linear-gradient(135deg, #fde7f3, #ede5ff);
+
+  --pink-soft-bg: #fce7f3;
+  --pink-soft-fg: #be185d;
+  --purple-soft-bg: #f3edff;
+  --purple-soft-fg: #6d28d9;
+  --accent-text: #6d28d9;
+
+  --late-bg: #ffedd5;
+  --late-fg: #c2410c;
+  --late-icon: #ea580c;
+  --late-item-bg: #fff9f5;
+  --late-item-border: #fde6d6;
+
+  --avatar-bg: #ede9fe;
+  --avatar-fg: #5b21b6;
+
+  /* prioridade */
+  --prio-high-bg: #fce7f3;
+  --prio-high-fg: #be185d;
+  --prio-high-bd: #f9a8d4;
+  --prio-med-bg: #ede9fe;
+  --prio-med-fg: #6d28d9;
+  --prio-med-bd: #c4b5fd;
+  --prio-low-bg: #dbeafe;
+  --prio-low-fg: #1d4ed8;
+  --prio-low-bd: #93c5fd;
+
+  /* seletor de status (segmentado) */
+  --seg-todo-bg: #ffffff;
+  --seg-doing-bg: #ede9fe;
+  --seg-doing-fg: #5b21b6;
+  --seg-done-bg: #dcfce7;
+  --seg-done-fg: #15803d;
+
+  /* pílulas de status */
+  --pill-todo-bg: #f3f1f8;
+  --pill-todo-fg: #4b4563;
+  --pill-doing-bg: #ede9fe;
+  --pill-doing-fg: #6d28d9;
+  --pill-done-bg: #dcfce7;
+  --pill-done-fg: #15803d;
+
+  --tab-active-bg: #ffffff;
+  --cal-today-bg: #f5f0ff;
+  --donut-week-3: #c7d2fe;
+
+  /* blocos de ícone dos KPIs */
+  --kpi-1-bg: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  --kpi-1-fg: #7c3aed;
+  --kpi-2-bg: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  --kpi-2-fg: #9333ea;
+  --kpi-3-bg: linear-gradient(135deg, #fce7f3, #fbcfe8);
+  --kpi-3-fg: #db2777;
+  --kpi-4-bg: linear-gradient(135deg, #ffedd5, #fed7aa);
+  --kpi-4-fg: #ea580c;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --page-bg: linear-gradient(160deg, #0e0a1c 0%, #130c28 50%, #1a0e24 100%);
+  --nav-bg: rgba(26, 19, 48, 0.88);
+  --card: #17112b;
+  --border: #2a2244;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.3);
+  --seg-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+
+  --ink: #f3f0ff;
+  --ink-2: #c9c2e0;
+  --muted: #a79fc2;
+  --subtle: #221a3b;
+  --thead: #1f1838;
+  --line: #2a2244;
+  --field: #1f1838;
+  --field-border: #3a2f5e;
+  --track: #2a2244;
+  --donut-track: #241c3f;
+  --panel: #1f1838;
+  --scrim: rgba(0, 0, 0, 0.6);
+
+  --nav-active-bg: linear-gradient(90deg, rgba(236, 72, 153, 0.3), rgba(139, 92, 246, 0.3));
+  --nav-active-fg: #fbe7f6;
+  --promo-bg: linear-gradient(160deg, #2a1735, #1f1840);
+  --promo-border: #3a2752;
+  --modal-tile-bg: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(139, 92, 246, 0.25));
+  --rem-hi: linear-gradient(135deg, #3a1a35, #2a2050);
+
+  --pink-soft-bg: rgba(236, 72, 153, 0.18);
+  --pink-soft-fg: #f9a8d4;
+  --purple-soft-bg: rgba(139, 92, 246, 0.2);
+  --purple-soft-fg: #c4b5fd;
+  --accent-text: #c4b5fd;
+
+  --late-bg: rgba(249, 115, 22, 0.18);
+  --late-fg: #fdba74;
+  --late-icon: #fdba74;
+  --late-item-bg: rgba(249, 115, 22, 0.07);
+  --late-item-border: rgba(249, 115, 22, 0.28);
+
+  --avatar-bg: #2e2550;
+  --avatar-fg: #c4b5fd;
+
+  --prio-high-bg: rgba(236, 72, 153, 0.18);
+  --prio-high-fg: #f9a8d4;
+  --prio-high-bd: #be185d;
+  --prio-med-bg: rgba(139, 92, 246, 0.2);
+  --prio-med-fg: #c4b5fd;
+  --prio-med-bd: #7c3aed;
+  --prio-low-bg: rgba(59, 130, 246, 0.2);
+  --prio-low-fg: #93c5fd;
+  --prio-low-bd: #2563eb;
+
+  --seg-todo-bg: #2e2550;
+  --seg-doing-bg: rgba(139, 92, 246, 0.3);
+  --seg-doing-fg: #ddd6fe;
+  --seg-done-bg: rgba(34, 197, 94, 0.2);
+  --seg-done-fg: #86efac;
+
+  --pill-todo-bg: rgba(255, 255, 255, 0.07);
+  --pill-todo-fg: #c9c2e0;
+  --pill-doing-bg: rgba(139, 92, 246, 0.22);
+  --pill-doing-fg: #c4b5fd;
+  --pill-done-bg: rgba(34, 197, 94, 0.18);
+  --pill-done-fg: #86efac;
+
+  --tab-active-bg: #2e2550;
+  --cal-today-bg: #2a2050;
+  --donut-week-3: #a5b4fc;
+
+  --kpi-1-bg: rgba(139, 92, 246, 0.2);
+  --kpi-1-fg: #c4b5fd;
+  --kpi-2-bg: rgba(168, 85, 247, 0.2);
+  --kpi-2-fg: #d8b4fe;
+  --kpi-3-bg: rgba(236, 72, 153, 0.2);
+  --kpi-3-fg: #f9a8d4;
+  --kpi-4-bg: rgba(249, 115, 22, 0.2);
+  --kpi-4-fg: #fdba74;
+}
+
+/* Cores utilitárias (bg-card, text-ink, border-line, ...) apontando para os tokens. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-jakarta), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-thead: var(--thead);
+  --color-field: var(--field);
+  --color-field-border: var(--field-border);
+  --color-track: var(--track);
+  --color-panel: var(--panel);
+  --color-nav: var(--nav-bg);
+  --color-scrim: var(--scrim);
+  --color-nav-active-fg: var(--nav-active-fg);
+
+  --color-pink-soft-bg: var(--pink-soft-bg);
+  --color-pink-soft-fg: var(--pink-soft-fg);
+  --color-purple-soft-bg: var(--purple-soft-bg);
+  --color-purple-soft-fg: var(--purple-soft-fg);
+  --color-accent-text: var(--accent-text);
+
+  --color-late-bg: var(--late-bg);
+  --color-late-fg: var(--late-fg);
+  --color-late-icon: var(--late-icon);
+  --color-late-item-bg: var(--late-item-bg);
+  --color-late-item-border: var(--late-item-border);
+
+  --color-avatar-bg: var(--avatar-bg);
+  --color-avatar-fg: var(--avatar-fg);
+
+  --color-prio-high-bg: var(--prio-high-bg);
+  --color-prio-high-fg: var(--prio-high-fg);
+  --color-prio-high-bd: var(--prio-high-bd);
+  --color-prio-med-bg: var(--prio-med-bg);
+  --color-prio-med-fg: var(--prio-med-fg);
+  --color-prio-med-bd: var(--prio-med-bd);
+  --color-prio-low-bg: var(--prio-low-bg);
+  --color-prio-low-fg: var(--prio-low-fg);
+  --color-prio-low-bd: var(--prio-low-bd);
+
+  --color-seg-todo-bg: var(--seg-todo-bg);
+  --color-seg-doing-bg: var(--seg-doing-bg);
+  --color-seg-doing-fg: var(--seg-doing-fg);
+  --color-seg-done-bg: var(--seg-done-bg);
+  --color-seg-done-fg: var(--seg-done-fg);
+
+  --color-pill-todo-bg: var(--pill-todo-bg);
+  --color-pill-todo-fg: var(--pill-todo-fg);
+  --color-pill-doing-bg: var(--pill-doing-bg);
+  --color-pill-doing-fg: var(--pill-doing-fg);
+  --color-pill-done-bg: var(--pill-done-bg);
+  --color-pill-done-fg: var(--pill-done-fg);
+
+  --color-tab-active: var(--tab-active-bg);
+  --color-cal-today: var(--cal-today-bg);
+
+  --color-kpi-1-fg: var(--kpi-1-fg);
+  --color-kpi-2-fg: var(--kpi-2-fg);
+  --color-kpi-3-fg: var(--kpi-3-fg);
+  --color-kpi-4-fg: var(--kpi-4-fg);
+
+  --shadow-card: var(--shadow);
+  --shadow-soft: var(--shadow-sm);
+  --shadow-seg: var(--seg-shadow);
+
+  --radius-card: 20px;
+  --radius-field: 14px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--page-bg);
+  background-attachment: fixed;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Gradiente de ação (botões primários, aba/tema ativos, dia selecionado). */
+.bg-action {
+  background: linear-gradient(90deg, #db2777, #7c3aed);
+}
+
+.bg-action-diag {
+  background: linear-gradient(135deg, #db2777, #7c3aed);
+}
+
+dialog::backdrop {
+  background: var(--scrim);
+  backdrop-filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
 }
