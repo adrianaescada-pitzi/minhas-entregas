@@ -1,6 +1,6 @@
-# Dashboard de tarefas pessoais + progresso do time (Linear)
+# Dashboard de tarefas pessoais
 
-App web de uso pessoal para acompanhar as tarefas do trabalho e o progresso dos projetos do time no Linear. Idioma da interface: **português do Brasil**. Fuso: **America/Sao_Paulo**.
+App web de uso pessoal para acompanhar as tarefas do trabalho, publicado num link fixo (sem login). Idioma da interface: **português do Brasil**. Fuso: **America/Sao_Paulo**.
 
 > O layout já foi desenhado e aprovado. Os arquivos em `design/` são a **referência visual e de lógica**. Eles usam um formato próprio (`.dc.html`, com `<sc-for>`, `<sc-if>` e `{{...}}`), então **não rodam sozinhos**: leia-os como código-fonte de referência (estrutura, estilos inline, cores, textos e a lógica no `<script>`) e reescreva em React.
 
@@ -26,11 +26,12 @@ Se algo aqui conflitar com uma escolha melhor, proponha antes de implementar.
 5. **Progresso de hoje** e **Progresso da semana**: duas roscas lado a lado, mesma estrutura, cores diferentes. Centro mostra o % entregue; a legenda mostra entregues, em andamento, a fazer e o total.
 6. **Calendário do mês**: navegação entre meses, pontos coloridos por dia (entregue, aberta, atrasada), e ao clicar em um dia o painel abaixo lista as tarefas dele.
 7. **Lembretes**: card com o próximo lembrete pendente (ações "Adiar 15 min" e "Dispensar") e a lista dos lembretes do dia.
-8. **Projetos do time (Linear)**: tabela com, por projeto em andamento, % entregue, % restante, issues concluídas/total, data da última entrega (data-alvo) e status "No ritmo" / "Abaixo do ritmo".
-9. **Busca** no topo, filtrando as tarefas de hoje por nome ou projeto.
-10. **Tema claro e escuro**: seletor no topo (Claro / Escuro). Padrão: preferência do sistema. Persistir a escolha.
+8. **Busca** no topo, filtrando as tarefas de hoje por nome ou projeto.
+9. **Tema claro e escuro**: seletor no topo (Claro / Escuro). Padrão: preferência do sistema. Persistir a escolha.
 
 Não incluir: sino de notificações nem bloco de nome/cargo no topo (foram removidos de propósito).
+
+**Fora do escopo (decidido)**: integração com o Linear (tabela "Projetos do time" e card "Conectar ao Linear"), lembretes com o app fechado (push/e-mail/Google Calendar) e login. O campo Projeto da tarefa é texto livre.
 
 ## Regras de negócio
 
@@ -39,14 +40,8 @@ Não incluir: sino de notificações nem bloco de nome/cargo no topo (foram remo
 - **Atrasada**: `dueDate < hoje` e `status != done`.
 - **Entregue com atraso**: `deliveredAt > prazo` (com a regra de 23:59 acima).
 - **Ao reabrir** uma tarefa concluída, limpar `deliveredAt`.
-- **Semana**: o protótipo usou "hoje + 4 dias". **Decisão a confirmar com o usuário**: usar a semana corrente de segunda a sexta (ou segunda a domingo).
+- **Semana**: segunda a sexta da semana corrente (o protótipo usava "hoje + 4 dias").
 - **Rosca**: percentual = concluídas ÷ total do período, arredondado. Total zero = 0%.
-- **Linear, por projeto**:
-  - `% entregue` = issues concluídas ÷ total de issues (ou o campo `progress` do projeto, se preferir; documentar a escolha).
-  - `% restante` = 100 − % entregue.
-  - `Última entrega` = data-alvo do projeto (`targetDate`).
-  - `Esperado` = (hoje − início) ÷ (data-alvo − início). **No ritmo** se `% entregue ≥ esperado − 10 pontos`; senão **Abaixo do ritmo**. Sem data de início ou de alvo, não exibir o status.
-  - Mostrar só projetos em andamento (não concluídos nem cancelados).
 
 ## Modelo de dados (ponto de partida)
 
@@ -63,25 +58,13 @@ Task
   reminderState enum(SCHEDULED, SNOOZED, DISMISSED, SENT)
   status        enum(TODO, DOING, DONE)
   deliveredAt   datetime | null
-  projectName   string | null      // texto livre ou id de projeto do Linear
+  projectName   string | null      // texto livre
   createdAt, updatedAt
 ```
 
-## Integração com o Linear
-
-- API GraphQL do Linear. Autenticação com **chave de API pessoal** guardada em variável de ambiente (`LINEAR_API_KEY`), nunca no código nem no front-end.
-- A chamada acontece no servidor (route handler ou server action) e o resultado é cacheado por poucos minutos.
-- Confirmar nos docs do Linear os campos exatos de projeto (progresso, datas, estado) antes de implementar. Definir com o usuário qual **time** exibir.
-- Enquanto a chave não estiver configurada, mostrar dados de exemplo claramente marcados como tal.
-
 ## Lembretes
 
-Os lembretes precisam funcionar **com o app fechado**. Proposta, em ordem:
-1. Web Push (service worker) + job agendado (cron) que envia quando `reminderAt` chega.
-2. E-mail como alternativa (ex.: Resend).
-3. Opcional: criar o evento no Google Calendar com alerta.
-
-Dentro do app, manter o card "Lembretes" com adiar 15 min e dispensar.
+O card "Lembretes" mostra o próximo lembrete pendente do dia, com "Adiar 15 min" e "Dispensar". Os avisos só aparecem com o dashboard aberto; não há notificação com o app fechado (fora do escopo).
 
 ## Design
 
@@ -112,19 +95,17 @@ Estilo: fundo lavanda suave, sidebar flutuante, cards brancos com sombra leve, �
 
 ## Ordem de trabalho
 
-1. **Base**: projeto Next.js, tokens de tema claro/escuro, layout (sidebar, topo), componentes de UI com dados mockados, igual ao design.
+1. **Base** (concluída): projeto Next.js, tokens de tema claro/escuro, layout e componentes com dados mockados.
 2. **Dados**: Prisma + SQLite, CRUD de tarefas, modal de nova tarefa, mudança de status com `deliveredAt`, listas de hoje/atrasadas, roscas, calendário e registro de entregas, tudo vindo do banco.
-3. **Testes** da lógica de datas, lembretes, atraso e progresso (Vitest).
-4. **Linear**: leitura dos projetos e cálculo de progresso.
-5. **Lembretes** com o app fechado.
-6. **Acesso e deploy**: login simples (uso pessoal), Postgres em produção, variáveis de ambiente, publicação.
+3. **Testes** (Vitest) da lógica de datas, lembretes, atraso e progresso.
+4. **Deploy sem login**: Postgres em produção, variáveis de ambiente e publicação num link fixo. Sem login; a página não é indexada por buscadores (robots/noindex), mas quem tiver o link vê e edita tudo.
 
-## Decisões em aberto (perguntar ao usuário antes de implementar)
+## Decisões
 
-- Semana: segunda a sexta ou segunda a domingo?
-- Canal dos lembretes: push, e-mail, Google Calendar, ou mais de um?
-- Qual time do Linear exibir?
-- Hospedagem (Vercel + Neon/Supabase é a sugestão) e forma de login.
+- Semana do progresso: **segunda a sexta** da semana corrente.
+- Projeto da tarefa: texto livre, com sugestão dos já usados.
+- Acesso: link sem login (aceito: quem tiver o link vê e edita). Sem indexação.
+- Hospedagem (Vercel + Neon/Supabase é a sugestão): **a decidir antes da etapa 4**.
 
 ## Convenções
 

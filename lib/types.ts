@@ -28,22 +28,6 @@ export interface Task {
   projectName: string | null;
 }
 
-export interface LinearProject {
-  id: string;
-  name: string;
-  /** sigla de 3 letras mostrada no bloco colorido */
-  key: string;
-  /** "YYYY-MM-DD" ou null */
-  startDate: string | null;
-  /** "YYYY-MM-DD" ou null (data-alvo = "última entrega") */
-  targetDate: string | null;
-  completedIssues: number;
-  totalIssues: number;
-  /** iniciais dos membros */
-  members: string[];
-  tile: string;
-}
-
 export interface NewTaskInput {
   title: string;
   dueDate: string;

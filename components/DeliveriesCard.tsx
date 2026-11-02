@@ -16,7 +16,7 @@ export function DeliveriesCard({ tasks, today }: Props) {
     <section
       id="entregas"
       aria-labelledby="h-entregas"
-      className={`${CARD} flex min-w-0 flex-[1_1_300px] scroll-mt-5 flex-col gap-3.5`}
+      className={`${CARD} flex min-w-0 scroll-mt-5 flex-col gap-3.5`}
     >
       <div className="flex flex-col gap-0.5">
         <h2 id="h-entregas" className="m-0 text-lg font-bold tracking-[-0.01em]">
@@ -24,7 +24,7 @@ export function DeliveriesCard({ tasks, today }: Props) {
         </h2>
         <span className="text-[13px] text-ink-2">Quando cada tarefa foi concluída</span>
       </div>
-      <ul className="flex flex-col">
+      <ul className="grid gap-x-10 md:grid-cols-2">
         {list.map((t) => {
           const day = (t.deliveredAt as string).slice(0, 10);
           const time = (t.deliveredAt as string).slice(11, 16);

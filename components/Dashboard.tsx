@@ -9,7 +9,7 @@ import {
   parseDate,
   workWeek,
 } from "@/lib/dates";
-import { buildMockProjects, buildMockTasks, MOCK_PROJECT_NAMES } from "@/lib/mock";
+import { buildMockTasks } from "@/lib/mock";
 import { periodStats } from "@/lib/progress";
 import { dismissReminder, snoozeReminder } from "@/lib/reminders";
 import { createTask, daysLate, overdueTasks, setTaskStatus, todayTasks, weekTasks } from "@/lib/tasks";
@@ -21,7 +21,6 @@ import { KpiCards } from "./KpiCards";
 import { NewTaskModal } from "./NewTaskModal";
 import { OverdueCard } from "./OverdueCard";
 import { PageHeader } from "./PageHeader";
-import { ProjectsCard } from "./ProjectsCard";
 import { RemindersCard } from "./RemindersCard";
 import { Sidebar } from "./Sidebar";
 import { TodayTable, type StatusFilter } from "./TodayTable";
@@ -50,7 +49,6 @@ export function Dashboard() {
   const today = now.date;
 
   const [tasks, setTasks] = useState<Task[]>(() => buildMockTasks(now.date));
-  const projects = useMemo(() => buildMockProjects(today), [today]);
 
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<StatusFilter>("ALL");
@@ -76,6 +74,12 @@ export function Dashboard() {
     setMonthOffset(monthOffsetOf(today, input.dueDate));
     setModalOpen(false);
   };
+
+  // sugestões do campo Projeto: os nomes já usados nas tarefas
+  const projectNames = useMemo(
+    () => [...new Set(tasks.map((t) => t.projectName).filter((n): n is string => !!n))].sort((a, b) => a.localeCompare(b, "pt-BR")),
+    [tasks],
+  );
 
   const todayList = todayTasks(tasks, today);
   const overdue = overdueTasks(tasks, today);
@@ -142,16 +146,13 @@ export function Dashboard() {
           />
         </div>
 
-        <div className="flex flex-wrap items-start gap-6">
-          <ProjectsCard projects={projects} today={today} isSample />
-          <DeliveriesCard tasks={tasks} today={today} />
-        </div>
+        <DeliveriesCard tasks={tasks} today={today} />
       </main>
 
       {modalOpen && (
         <NewTaskModal
           today={today}
-          projectNames={MOCK_PROJECT_NAMES}
+          projectNames={projectNames}
           onClose={() => setModalOpen(false)}
           onSave={onSave}
         />

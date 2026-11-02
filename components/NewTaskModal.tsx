@@ -59,7 +59,7 @@ export function NewTaskModal({ today, projectNames, onClose, onSave }: Props) {
       dueTime: dueTime || null,
       priority,
       reminderOffset: reminder,
-      projectName: project || null,
+      projectName: project.trim() || null,
     });
   }
 
@@ -209,14 +209,21 @@ export function NewTaskModal({ today, projectNames, onClose, onSave }: Props) {
           <label htmlFor={`${id}-proj`} className={label}>
             Projeto (opcional)
           </label>
-          <select id={`${id}-proj`} value={project} onChange={(e) => setProject(e.target.value)} className={FIELD}>
-            <option value="">Sem projeto</option>
+          <input
+            id={`${id}-proj`}
+            type="text"
+            list={`${id}-projetos`}
+            value={project}
+            onChange={(e) => setProject(e.target.value)}
+            placeholder="Sem projeto"
+            autoComplete="off"
+            className={`${FIELD} px-4`}
+          />
+          <datalist id={`${id}-projetos`}>
             {projectNames.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
+              <option key={name} value={name} />
             ))}
-          </select>
+          </datalist>
         </div>
 
         <div className="flex flex-wrap justify-end gap-2.5 pt-1">

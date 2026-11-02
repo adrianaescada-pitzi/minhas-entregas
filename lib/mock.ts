@@ -1,24 +1,19 @@
 /**
  * Dados de exemplo da etapa 1 (sem banco). Os prazos são relativos a "hoje",
- * então a tela fica coerente em qualquer dia. A etapa 2 troca isto pelo Prisma;
- * a etapa 4 troca MOCK_PROJECTS pelos projetos reais do Linear.
+ * então a tela fica coerente em qualquer dia. A etapa 2 troca isto pelo Prisma.
  */
 import { addDaysISO } from "./dates";
 import { computeReminderAt } from "./reminders";
-import type { LinearProject, Priority, ReminderOffset, Task, TaskStatus } from "./types";
+import type { Priority, ReminderOffset, Task, TaskStatus } from "./types";
 
 const P: Record<string, Priority> = { alta: "HIGH", media: "MEDIUM", baixa: "LOW" };
 const R: Record<string, ReminderOffset> = { "": "NONE", "15": "MIN_15", "30": "MIN_30", "60": "HOUR_1", "1d": "DAY_1" };
 const S: Record<string, TaskStatus> = { todo: "TODO", doing: "DOING", done: "DONE" };
 
-export const MOCK_PROJECT_NAMES = [
-  "App de avaliação v2",
-  "Painel do lojista",
-  "Integração de parceiros via API",
-  "Migração de pagamentos",
-] as const;
-
-const [AVA, LOJ, API, PAG] = MOCK_PROJECT_NAMES;
+const AVA = "App de avaliação v2";
+const LOJ = "Painel do lojista";
+const API = "Integração de parceiros via API";
+const PAG = "Migração de pagamentos";
 
 export function buildMockTasks(today: string): Task[] {
   // dayOffset: dias a partir de hoje; delivered: dia (relativo a hoje) e horário da entrega
@@ -93,54 +88,5 @@ export function buildMockTasks(today: string): Task[] {
     mk("f21", "Entrega final do app v2", 18, "18:00", "alta", "60", "todo", null, AVA),
     mk("f22", "Planejamento de dezembro", 22, "10:00", "media"),
     mk("f23", "Revisão de orçamento", 24, "15:00", "alta"),
-  ];
-}
-
-export function buildMockProjects(today: string): LinearProject[] {
-  return [
-    {
-      id: "p-ava",
-      name: AVA,
-      key: "AVA",
-      startDate: addDaysISO(today, -42),
-      targetDate: addDaysISO(today, 18),
-      completedIssues: 34,
-      totalIssues: 50,
-      members: ["AS", "RL", "MC", "JP"],
-      tile: "linear-gradient(135deg, #F9A8D4, #DB2777)",
-    },
-    {
-      id: "p-loj",
-      name: LOJ,
-      key: "LOJ",
-      startDate: addDaysISO(today, -56),
-      targetDate: addDaysISO(today, 11),
-      completedIssues: 23,
-      totalIssues: 27,
-      members: ["BF", "TK"],
-      tile: "linear-gradient(135deg, #C4B5FD, #7C3AED)",
-    },
-    {
-      id: "p-api",
-      name: API,
-      key: "API",
-      startDate: addDaysISO(today, -28),
-      targetDate: addDaysISO(today, 32),
-      completedIssues: 12,
-      totalIssues: 29,
-      members: ["DM", "LS", "RG"],
-      tile: "linear-gradient(135deg, #BFDBFE, #3B82F6)",
-    },
-    {
-      id: "p-pag",
-      name: PAG,
-      key: "PAG",
-      startDate: addDaysISO(today, -32),
-      targetDate: addDaysISO(today, 46),
-      completedIssues: 5,
-      totalIssues: 23,
-      members: ["CN", "VA"],
-      tile: "linear-gradient(135deg, #FDBA74, #EA580C)",
-    },
   ];
 }

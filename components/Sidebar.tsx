@@ -1,13 +1,11 @@
 import type { ComponentType } from "react";
 import {
-  BarChartIcon,
   BellIcon,
   CalendarIcon,
   CheckIcon,
   ClockIcon,
   HistoryIcon,
   HomeIcon,
-  LinkIcon,
   ListChecksIcon,
 } from "./icons";
 
@@ -17,7 +15,6 @@ const NAV: { href: string; label: string; Icon: ComponentType<{ size?: number }>
   { href: "#atrasadas", label: "Atrasadas", Icon: ClockIcon },
   { href: "#calendario", label: "Calendário", Icon: CalendarIcon },
   { href: "#lembretes", label: "Lembretes", Icon: BellIcon },
-  { href: "#projetos", label: "Projetos do time", Icon: BarChartIcon },
   { href: "#entregas", label: "Registro de entregas", Icon: HistoryIcon },
 ];
 
@@ -57,26 +54,9 @@ export function Sidebar() {
         ))}
       </ul>
 
-      <div className="mt-auto hidden flex-col gap-5 lg:flex">
-        <div className="flex flex-col gap-2.5 rounded-card border border-(--promo-border) bg-(image:--promo-bg) p-5">
-          <span
-            aria-hidden="true"
-            className="inline-flex size-10 items-center justify-center rounded-xl bg-pink-soft-bg text-pink-soft-fg"
-          >
-            <LinkIcon size={20} />
-          </span>
-          <span className="text-[17px] font-extrabold leading-tight tracking-[-0.01em]">Conectar ao Linear</span>
-          <span className="text-[13px] text-ink-2">Traga o progresso real dos projetos do seu time para cá.</span>
-          {/* Etapa 4: passa a abrir a configuração da chave do Linear. Por ora leva à tabela de exemplo. */}
-          <a
-            href="#projetos"
-            className="inline-flex min-h-11 items-center justify-center rounded-field bg-[linear-gradient(90deg,#F9A8D4,#F472B6)] font-bold text-[#3B0764] no-underline shadow-[0_8px_18px_rgba(236,72,153,0.25)]"
-          >
-            Conectar
-          </a>
-        </div>
-        <span className="whitespace-pre-line px-2.5 text-xs text-muted">{"Organize o dia.\nEntregue no prazo."}</span>
-      </div>
+      <span className="mt-auto hidden whitespace-pre-line px-2.5 text-xs text-muted lg:block">
+        {"Organize o dia.\nEntregue no prazo."}
+      </span>
     </nav>
   );
 }

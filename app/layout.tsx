@@ -11,7 +11,8 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Minhas tarefas",
-  description: "Tarefas pessoais e progresso dos projetos do time no Linear.",
+  description: "Tarefas pessoais, prazos e entregas.",
+  robots: { index: false, follow: false },
 };
 
 /**
