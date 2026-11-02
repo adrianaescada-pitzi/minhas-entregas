@@ -190,3 +190,11 @@ export const BarsIcon = (p: IconProps) => (
     <rect x="16" y="13" width="4" height="7" rx="1.5" />
   </Fill>
 );
+
+export const DownloadIcon = (p: IconProps) => (
+  <Stroke {...p}>
+    <path d="M12 3v12" />
+    <path d="m7 10 5 5 5-5" />
+    <path d="M5 21h14" />
+  </Stroke>
+);

@@ -1,22 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  formatDayMonthLong,
-  formatHeaderDate,
-  monthOffsetOf,
-  nowInSaoPaulo,
-  parseDate,
-  workWeek,
-} from "@/lib/dates";
-import { buildMockTasks } from "@/lib/mock";
+import { formatDayMonthLong, formatHeaderDate, monthOffsetOf, nowInSaoPaulo, parseDate, workWeek } from "@/lib/dates";
 import { periodStats } from "@/lib/progress";
 import { dismissReminder, snoozeReminder } from "@/lib/reminders";
 import { createTask, daysLate, overdueTasks, setTaskStatus, todayTasks, weekTasks } from "@/lib/tasks";
-import type { NewTaskInput, Task, TaskStatus } from "@/lib/types";
+import { updateTasks } from "@/lib/taskStore";
+import type { NewTaskInput, TaskStatus } from "@/lib/types";
 import { CalendarCard } from "./CalendarCard";
+import { DataCard, loadSamples } from "./DataCard";
 import { DeliveriesCard } from "./DeliveriesCard";
-import { DemoBanner } from "./DemoBanner";
 import { DonutCard } from "./DonutCard";
 import { KpiCards } from "./KpiCards";
 import { NewTaskModal } from "./NewTaskModal";
@@ -26,6 +19,8 @@ import { RemindersCard } from "./RemindersCard";
 import { Sidebar } from "./Sidebar";
 import { TodayTable, type StatusFilter } from "./TodayTable";
 import { TopBar } from "./TopBar";
+import { useHydrated, useTaskStore } from "./useTaskStore";
+import { WelcomeCard } from "./WelcomeCard";
 
 function greetingFor(time: string): string {
   const hour = Number(time.slice(0, 2));
@@ -41,15 +36,35 @@ function weekSubtitle(start: string, end: string): string {
     : `Tarefas de ${formatDayMonthLong(start)} a ${formatDayMonthLong(end)}`;
 }
 
+const SHELL = "flex min-h-screen flex-col gap-5 p-4 lg:flex-row lg:items-start lg:gap-6 lg:p-5";
+
 /**
- * Etapa 1: tudo em memória, com dados de exemplo. A etapa 2 troca o estado local
- * por leitura/escrita no banco, mantendo estes mesmos componentes.
+ * As tarefas ficam no localStorage do navegador. O HTML publicado é estático e não
+ * conhece nem a data de hoje nem as tarefas, então o conteúdo só aparece depois da
+ * hidratação (evita divergência entre o HTML do build e o navegador).
  */
 export function Dashboard() {
+  const ready = useHydrated();
+  if (!ready) {
+    return (
+      <div className={SHELL}>
+        <Sidebar />
+        <main id="visao" className="flex min-w-0 flex-1 flex-col gap-6">
+          <h1 className="m-0 text-[clamp(32px,3.4vw,46px)] leading-[1.05] font-extrabold tracking-[-0.03em]">
+            Minhas tarefas
+          </h1>
+          <p className="m-0 text-[15px] text-ink-2">Carregando suas tarefas…</p>
+        </main>
+      </div>
+    );
+  }
+  return <DashboardContent />;
+}
+
+function DashboardContent() {
   const [now, setNow] = useState(nowInSaoPaulo);
   const today = now.date;
-
-  const [tasks, setTasks] = useState<Task[]>(() => buildMockTasks(now.date));
+  const { tasks, status } = useTaskStore();
 
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<StatusFilter>("ALL");
@@ -63,14 +78,11 @@ export function Dashboard() {
     return () => clearInterval(id);
   }, []);
 
-  const updateTask = (id: string, fn: (t: Task) => Task) =>
-    setTasks((prev) => prev.map((t) => (t.id === id ? fn(t) : t)));
-
-  const onStatusChange = (id: string, status: TaskStatus) =>
-    updateTask(id, (t) => setTaskStatus(t, status, nowInSaoPaulo().stamp));
+  const onStatusChange = (id: string, next: TaskStatus) =>
+    updateTasks((prev) => prev.map((t) => (t.id === id ? setTaskStatus(t, next, nowInSaoPaulo().stamp) : t)));
 
   const onSave = (input: NewTaskInput) => {
-    setTasks((prev) => [...prev, createTask(input)]);
+    updateTasks((prev) => [...prev, createTask(input)]);
     setSelectedDate(input.dueDate);
     setMonthOffset(monthOffsetOf(today, input.dueDate));
     setModalOpen(false);
@@ -87,12 +99,10 @@ export function Dashboard() {
   const week = workWeek(today);
 
   return (
-    <div className="flex min-h-screen flex-col gap-5 p-4 lg:flex-row lg:items-start lg:gap-6 lg:p-5">
+    <div className={SHELL}>
       <Sidebar />
 
       <main id="visao" className="flex min-w-0 flex-1 scroll-mt-5 flex-col gap-6">
-        <DemoBanner />
-
         <TopBar query={query} onQueryChange={setQuery} />
 
         <PageHeader
@@ -100,6 +110,8 @@ export function Dashboard() {
           todayLabel={formatHeaderDate(today)}
           onNewTask={() => setModalOpen(true)}
         />
+
+        {tasks.length === 0 && <WelcomeCard onNewTask={() => setModalOpen(true)} onLoadSamples={() => loadSamples(today)} />}
 
         <KpiCards
           day={periodStats(todayList)}
@@ -144,21 +156,18 @@ export function Dashboard() {
           <RemindersCard
             tasks={tasks}
             today={today}
-            onSnooze={(id) => updateTask(id, snoozeReminder)}
-            onDismiss={(id) => updateTask(id, dismissReminder)}
+            onSnooze={(id) => updateTasks((prev) => prev.map((t) => (t.id === id ? snoozeReminder(t) : t)))}
+            onDismiss={(id) => updateTasks((prev) => prev.map((t) => (t.id === id ? dismissReminder(t) : t)))}
           />
         </div>
 
         <DeliveriesCard tasks={tasks} today={today} />
+
+        <DataCard tasks={tasks} today={today} status={status} />
       </main>
 
       {modalOpen && (
-        <NewTaskModal
-          today={today}
-          projectNames={projectNames}
-          onClose={() => setModalOpen(false)}
-          onSave={onSave}
-        />
+        <NewTaskModal today={today} projectNames={projectNames} onClose={() => setModalOpen(false)} onSave={onSave} />
       )}
     </div>
   );

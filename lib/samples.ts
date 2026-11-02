@@ -1,6 +1,7 @@
 /**
- * Dados de exemplo da etapa 1 (sem banco). Os prazos são relativos a "hoje",
- * então a tela fica coerente em qualquer dia. A etapa 2 troca isto pelo Prisma.
+ * Tarefas de exemplo ("Carregar exemplos"). Os prazos são relativos a "hoje",
+ * então a tela fica coerente em qualquer dia. Todos os ids começam com
+ * SAMPLE_PREFIX, o que permite carregar e remover só os exemplos.
  */
 import { addDaysISO } from "./dates";
 import { computeReminderAt } from "./reminders";
@@ -15,7 +16,11 @@ const LOJ = "Painel do lojista";
 const API = "Integração de parceiros via API";
 const PAG = "Migração de pagamentos";
 
-export function buildMockTasks(today: string): Task[] {
+export const SAMPLE_PREFIX = "exemplo-";
+
+export const isSample = (t: Task): boolean => t.id.startsWith(SAMPLE_PREFIX);
+
+export function buildSampleTasks(today: string): Task[] {
   // dayOffset: dias a partir de hoje; delivered: dia (relativo a hoje) e horário da entrega
   const mk = (
     id: string,
@@ -46,7 +51,7 @@ export function buildMockTasks(today: string): Task[] {
     };
   };
 
-  return [
+  const tasks: Task[] = [
     // hoje
     mk("t1", "Revisar PR do fluxo de checkout", 0, "10:00", "alta", "30", "done", { dayOffset: 0, time: "09:52" }, AVA),
     mk("t2", "Daily com o time de produto", 0, "09:30", "media", "", "done", { dayOffset: 0, time: "09:41" }),
@@ -89,4 +94,5 @@ export function buildMockTasks(today: string): Task[] {
     mk("f22", "Planejamento de dezembro", 22, "10:00", "media"),
     mk("f23", "Revisão de orçamento", 24, "15:00", "alta"),
   ];
+  return tasks.map((t) => ({ ...t, id: `${SAMPLE_PREFIX}${t.id}` }));
 }

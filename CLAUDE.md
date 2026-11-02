@@ -1,14 +1,14 @@
 # Dashboard de tarefas pessoais
 
-App web de uso pessoal para acompanhar as tarefas do trabalho, publicado num link fixo (sem login). Idioma da interface: **português do Brasil**. Fuso: **America/Sao_Paulo**.
+App web de uso pessoal para acompanhar as tarefas do trabalho, publicado no GitHub Pages (site estático, sem login). Os dados ficam salvos no próprio navegador. Idioma da interface: **português do Brasil**. Fuso: **America/Sao_Paulo**.
 
 > O layout já foi desenhado e aprovado. Os arquivos em `design/` são a **referência visual e de lógica**. Eles usam um formato próprio (`.dc.html`, com `<sc-for>`, `<sc-if>` e `{{...}}`), então **não rodam sozinhos**: leia-os como código-fonte de referência (estrutura, estilos inline, cores, textos e a lógica no `<script>`) e reescreva em React.
 
 ## Stack sugerida
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
-- Prisma + SQLite em desenvolvimento; Postgres (Neon ou Supabase) em produção
-- Zod para validação, date-fns com locale `pt-BR`
+- Persistência no navegador (localStorage), sem banco de dados e sem servidor; backup e restauração por arquivo JSON
+- Zod para validar o que é lido do navegador e dos backups, date-fns com locale `pt-BR`
 - Vitest para testar a lógica de datas e de progresso
 - Gráficos de rosca e barras em SVG próprio (sem biblioteca), como no design
 
@@ -28,10 +28,11 @@ Se algo aqui conflitar com uma escolha melhor, proponha antes de implementar.
 7. **Lembretes**: card com o próximo lembrete pendente (ações "Adiar 15 min" e "Dispensar") e a lista dos lembretes do dia.
 8. **Busca** no topo, filtrando as tarefas de hoje por nome ou projeto.
 9. **Tema claro e escuro**: seletor no topo (Claro / Escuro). Padrão: preferência do sistema. Persistir a escolha.
+10. **Seus dados**: tudo é salvo no localStorage. O app começa vazio (com boas-vindas) e oferece exportar/importar backup em JSON, carregar/remover tarefas de exemplo e apagar tudo. Dados ilegíveis não derrubam o app: o texto original é guardado numa cópia e o painel recomeça vazio; itens inválidos são descartados individualmente; várias abas ficam sincronizadas.
 
 Não incluir: sino de notificações nem bloco de nome/cargo no topo (foram removidos de propósito).
 
-**Fora do escopo (decidido)**: integração com o Linear (tabela "Projetos do time" e card "Conectar ao Linear"), lembretes com o app fechado (push/e-mail/Google Calendar) e login. O campo Projeto da tarefa é texto livre.
+**Fora do escopo (decidido)**: integração com o Linear (tabela "Projetos do time" e card "Conectar ao Linear"), lembretes com o app fechado (push/e-mail/Google Calendar), login, banco de dados/servidor e sincronização entre aparelhos (os dados ficam em um navegador; o backup JSON leva para outro). O campo Projeto da tarefa é texto livre.
 
 ## Regras de negócio
 
@@ -43,12 +44,11 @@ Não incluir: sino de notificações nem bloco de nome/cargo no topo (foram remo
 - **Semana**: segunda a sexta da semana corrente (o protótipo usava "hoje + 4 dias").
 - **Rosca**: percentual = concluídas ÷ total do período, arredondado. Total zero = 0%.
 
-## Modelo de dados (ponto de partida)
+## Modelo de dados (salvo em JSON no localStorage, versão 1)
 
 ```
 Task
-  id            string (cuid)
-  userId        string
+  id            string (uuid; exemplos começam com "exemplo-")
   title         string
   dueDate       date
   dueTime       string | null      // "HH:mm" ou null = sem horário definido
@@ -59,8 +59,11 @@ Task
   status        enum(TODO, DOING, DONE)
   deliveredAt   datetime | null
   projectName   string | null      // texto livre
-  createdAt, updatedAt
 ```
+
+Datas e horas são texto no fuso America/Sao_Paulo (`YYYY-MM-DD` e `YYYY-MM-DDTHH:mm`). Validação em `lib/schema.ts`; armazenamento em `lib/taskStore.ts`.
+
+``````
 
 ## Lembretes
 
@@ -95,20 +98,19 @@ Estilo: fundo lavanda suave, sidebar flutuante, cards brancos com sombra leve, �
 
 ## Ordem de trabalho
 
-1. **Base** (concluída): projeto Next.js, tokens de tema claro/escuro, layout e componentes com dados mockados.
-2. **Dados**: Prisma + SQLite, CRUD de tarefas, modal de nova tarefa, mudança de status com `deliveredAt`, listas de hoje/atrasadas, roscas, calendário e registro de entregas, tudo vindo do banco.
-3. **Testes** (Vitest) da lógica de datas, lembretes, atraso e progresso.
-4. **Deploy sem login**: Postgres em produção, variáveis de ambiente e publicação num link fixo. Sem login; a página não é indexada por buscadores (robots/noindex), mas quem tiver o link vê e edita tudo.
+1. **Base** (concluída): projeto Next.js, tokens de tema claro/escuro, layout e componentes.
+2. **Persistência no navegador** (concluída): localStorage com validação, CRUD, backup JSON, exemplos e publicação no GitHub Pages (workflow em `.github/workflows/pages.yml`).
+3. **Testes** (Vitest) da lógica de datas, lembretes, atraso, progresso e do armazenamento.
 
 ## Decisões
 
 - Semana do progresso: **segunda a sexta** da semana corrente.
 - Projeto da tarefa: texto livre, com sugestão dos já usados.
-- Acesso: link sem login (aceito: quem tiver o link vê e edita). Sem indexação.
-- Hospedagem (Vercel + Neon/Supabase é a sugestão): **a decidir antes da etapa 4**.
+- Dados: só no navegador (localStorage). Quem abre o link tem os próprios dados, isolados dos de qualquer outra pessoa.
+- Publicação: GitHub Pages (repositório público), sem login e sem indexação por buscadores.
 
 ## Convenções
 
 - TypeScript estrito. Funções de data e de progresso isoladas em `lib/` e cobertas por testes.
-- Nenhuma chave ou segredo no repositório; usar `.env.local` e deixar um `.env.example`.
+- Nenhuma chave ou segredo no repositório (o repositório é público). O app não usa variáveis de ambiente.
 - Commits pequenos, um por etapa da lista acima.

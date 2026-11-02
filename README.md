@@ -11,31 +11,33 @@ npm run dev      # http://localhost:3000
 
 Outros comandos: `npm run build`, `npm run lint`, `npx tsc --noEmit`.
 
-## Demonstração (GitHub Pages)
+## Onde roda
 
-Versão estática com dados fictícios, publicada por `.github/workflows/pages.yml` a cada push na `main`.
-Endereço: https://adrianaescada-pitzi.github.io/minhas-entregas/ (depois de ativar o Pages: Settings → Pages → Source: GitHub Actions).
+**https://adrianaescada-pitzi.github.io/minhas-entregas/** (GitHub Pages). O workflow `.github/workflows/pages.yml`
+publica a cada push na `main`.
 
 ```bash
-npm run build:demo   # gera a pasta out/ (usa DEMO_EXPORT=1; no Windows defina a variável antes)
+npm run build:pages   # gera out/ (site estático); no Windows defina PAGES_EXPORT=1 antes de `next build`
 ```
 
-Nada é salvo na demo: ao recarregar, volta ao início. Sem `DEMO_EXPORT`, o app roda normalmente.
+## Seus dados
 
-## Estado
-
-**Etapa 1 (Base) concluída**: layout do design, temas claro/escuro e dados de exemplo em memória
-(nada é salvo ao recarregar). Próximas: banco de dados (2), testes (3), deploy num link sem login (4).
+- Tudo fica salvo no `localStorage` do navegador: só aquele navegador, naquele aparelho, vê as tarefas.
+- Limpar os dados do site apaga as tarefas. Em **Seus dados** há **Exportar backup (.json)** e **Importar backup**.
+- O app começa vazio; **Carregar exemplos** preenche com tarefas fictícias (removíveis).
 
 ## Estrutura
 
 - `app/` – layout raiz (fonte, script de tema), `globals.css` com os tokens de tema
 - `components/` – blocos da interface
-- `lib/` – regras puras de datas, lembretes, atraso e progresso (a cobrir com Vitest na etapa 3)
+- `lib/` – regras puras de datas, lembretes, atraso e progresso; `schema.ts` (validação) e `taskStore.ts` (localStorage)
 - `design/` – referência visual aprovada (`.dc.html`, só leitura)
+
+## Estado
+
+Etapas 1 (base) e 2 (persistência no navegador) concluídas. Próxima: testes com Vitest.
 
 ## Decisões
 
 - Semana do progresso: segunda a sexta da semana corrente.
-- Fora do escopo: integração com o Linear, lembretes com o app fechado e login.
-- Acesso: link fixo sem login e sem indexação (quem tiver o link vê e edita). Hospedagem a decidir antes da etapa 4.
+- Fora do escopo: Linear, lembretes com o app fechado, login, banco de dados e sincronização entre aparelhos.

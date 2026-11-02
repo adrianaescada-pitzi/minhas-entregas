@@ -4,6 +4,7 @@ import {
   CalendarIcon,
   CheckIcon,
   ClockIcon,
+  DownloadIcon,
   HistoryIcon,
   HomeIcon,
   ListChecksIcon,
@@ -16,6 +17,7 @@ const NAV: { href: string; label: string; Icon: ComponentType<{ size?: number }>
   { href: "#calendario", label: "Calendário", Icon: CalendarIcon },
   { href: "#lembretes", label: "Lembretes", Icon: BellIcon },
   { href: "#entregas", label: "Registro de entregas", Icon: HistoryIcon },
+  { href: "#dados", label: "Seus dados", Icon: DownloadIcon },
 ];
 
 export function Sidebar() {

@@ -7,13 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:demo": "DEMO_EXPORT=1 next build"
+    "build:pages": "PAGES_EXPORT=1 next build"
   },
   "dependencies": {
     "date-fns": "^4.4.0",
     "next": "16.4.4",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
