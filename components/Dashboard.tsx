@@ -16,6 +16,7 @@ import { createTask, daysLate, overdueTasks, setTaskStatus, todayTasks, weekTask
 import type { NewTaskInput, Task, TaskStatus } from "@/lib/types";
 import { CalendarCard } from "./CalendarCard";
 import { DeliveriesCard } from "./DeliveriesCard";
+import { DemoBanner } from "./DemoBanner";
 import { DonutCard } from "./DonutCard";
 import { KpiCards } from "./KpiCards";
 import { NewTaskModal } from "./NewTaskModal";
@@ -90,6 +91,8 @@ export function Dashboard() {
       <Sidebar />
 
       <main id="visao" className="flex min-w-0 flex-1 scroll-mt-5 flex-col gap-6">
+        <DemoBanner />
+
         <TopBar query={query} onQueryChange={setQuery} />
 
         <PageHeader

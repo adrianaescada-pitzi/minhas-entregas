@@ -11,6 +11,17 @@ npm run dev      # http://localhost:3000
 
 Outros comandos: `npm run build`, `npm run lint`, `npx tsc --noEmit`.
 
+## Demonstração (GitHub Pages)
+
+Versão estática com dados fictícios, publicada por `.github/workflows/pages.yml` a cada push na `main`.
+Endereço: https://adrianaescada-pitzi.github.io/minhas-entregas/ (depois de ativar o Pages: Settings → Pages → Source: GitHub Actions).
+
+```bash
+npm run build:demo   # gera a pasta out/ (usa DEMO_EXPORT=1; no Windows defina a variável antes)
+```
+
+Nada é salvo na demo: ao recarregar, volta ao início. Sem `DEMO_EXPORT`, o app roda normalmente.
+
 ## Estado
 
 **Etapa 1 (Base) concluída**: layout do design, temas claro/escuro e dados de exemplo em memória
