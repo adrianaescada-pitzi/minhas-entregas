@@ -198,3 +198,22 @@ export const DownloadIcon = (p: IconProps) => (
     <path d="M5 21h14" />
   </Stroke>
 );
+
+export const TrashIcon = (p: IconProps) => (
+  <Stroke {...p}>
+    <path d="M3 6h18" />
+    <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+    <path d="m19 6-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+  </Stroke>
+);
+
+export const FileTextIcon = (p: IconProps) => (
+  <Stroke {...p}>
+    <path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z" />
+    <path d="M14 3v5h5" />
+    <path d="M9 13h6" />
+    <path d="M9 17h4" />
+  </Stroke>
+);

@@ -20,6 +20,7 @@ Se algo aqui conflitar com uma escolha melhor, proponha antes de implementar.
    - O campo de horário tem a opção **"Sem horário definido"** (primeira da lista), depois horários de 30 em 30 min, das 07:00 às 22:00.
    - Lembrete: sem lembrete, 15 min, 30 min, 1 h ou 1 dia antes.
    - Prioridade: Alta, Média, Baixa.
+   - Caixa **"Usar no reporte semanal"** (começa desmarcada): marca a tarefa com o selo "Reporte semanal" (tabela de hoje, atrasadas e calendário) para o reporte da semana ser montado depois. O reporte em si ainda não existe.
 2. **Tarefas de hoje** em tabela, com filtro por status (Todas, A fazer, Em andamento, Concluídas) e um seletor de status em cada linha (A fazer / Em andamento / Concluída). Só mostra tarefas com prazo hoje, ordenadas por horário; tarefas sem horário vão para o fim.
 3. **Atrasadas** em um bloco separado: prazo anterior a hoje e status diferente de concluída. Mostra "Venceu em ... · N dias de atraso" e o mesmo seletor de status.
 4. **Registro de entregas**: ao marcar como concluída, grava `deliveredAt`. A lista mostra quando foi entregue e se foi **no prazo** ou **com atraso**.
@@ -28,7 +29,8 @@ Se algo aqui conflitar com uma escolha melhor, proponha antes de implementar.
 7. **Lembretes**: card com o próximo lembrete pendente (ações "Adiar 15 min" e "Dispensar") e a lista dos lembretes do dia.
 8. **Busca** no topo, filtrando as tarefas de hoje por nome ou projeto.
 9. **Tema claro e escuro**: seletor no topo (Claro / Escuro). Padrão: preferência do sistema. Persistir a escolha.
-10. **Seus dados**: tudo é salvo no localStorage. O app começa vazio (com boas-vindas) e oferece exportar/importar backup em JSON, carregar/remover tarefas de exemplo e apagar tudo. Dados ilegíveis não derrubam o app: o texto original é guardado numa cópia e o painel recomeça vazio; itens inválidos são descartados individualmente; várias abas ficam sincronizadas.
+10. **Excluir tarefa**: botão de lixeira em cada tarefa da tabela de hoje, das atrasadas e do painel do dia no calendário (que dá acesso a qualquer outro dia). Sem janela de confirmação: aparece um aviso com **Desfazer** por 10 segundos, que devolve a última tarefa excluída.
+11. **Seus dados**: tudo é salvo no localStorage. O app começa vazio (com boas-vindas) e oferece exportar/importar backup em JSON, carregar/remover tarefas de exemplo e apagar tudo. Dados ilegíveis não derrubam o app: o texto original é guardado numa cópia e o painel recomeça vazio; itens inválidos são descartados individualmente; várias abas ficam sincronizadas.
 
 Não incluir: sino de notificações nem bloco de nome/cargo no topo (foram removidos de propósito).
 
@@ -59,11 +61,10 @@ Task
   status        enum(TODO, DOING, DONE)
   deliveredAt   datetime | null
   projectName   string | null      // texto livre
+  weeklyReport  boolean            // marcada para o reporte semanal (ausente em dados antigos = false)
 ```
 
 Datas e horas são texto no fuso America/Sao_Paulo (`YYYY-MM-DD` e `YYYY-MM-DDTHH:mm`). Validação em `lib/schema.ts`; armazenamento em `lib/taskStore.ts`.
-
-``````
 
 ## Lembretes
 

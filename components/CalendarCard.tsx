@@ -1,7 +1,9 @@
 import { formatLongDate, formatMonthYear, monthFromOffset, monthGrid, parseDate, plural } from "@/lib/dates";
 import { byDueTime, isOverdue } from "@/lib/tasks";
 import type { Task } from "@/lib/types";
+import { DeleteTaskButton } from "./DeleteTaskButton";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
+import { ReportBadge } from "./ReportBadge";
 import { CARD, PILL_LATE, STATUS_LABEL, STATUS_PILL } from "./styles";
 
 interface Props {
@@ -11,6 +13,7 @@ interface Props {
   selectedDate: string;
   onMonthChange: (offset: number) => void;
   onSelectDate: (date: string) => void;
+  onDelete: (id: string) => void;
 }
 
 const WEEKDAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
@@ -30,7 +33,7 @@ function dotColor(t: Task, date: string, today: string): string {
   return date < today ? "#EA580C" : "#EC4899";
 }
 
-export function CalendarCard({ tasks, today, monthOffset, selectedDate, onMonthChange, onSelectDate }: Props) {
+export function CalendarCard({ tasks, today, monthOffset, selectedDate, onMonthChange, onSelectDate, onDelete }: Props) {
   const base = monthFromOffset(today, monthOffset);
   const month = base.getMonth();
   const cells = monthGrid(base.getFullYear(), month);
@@ -134,8 +137,9 @@ export function CalendarCard({ tasks, today, monthOffset, selectedDate, onMonthC
             return (
               <li key={t.id} className="flex items-center gap-2.5 text-[13px]">
                 <span className="w-[42px] font-bold text-ink-2">{t.dueTime ?? "—"}</span>
-                <span className={`min-w-0 flex-1 ${t.status === "DONE" ? "text-muted line-through" : "text-ink"}`}>
-                  {t.title}
+                <span className="min-w-0 flex-1">
+                  <span className={t.status === "DONE" ? "text-muted line-through" : "text-ink"}>{t.title}</span>
+                  {t.weeklyReport && <ReportBadge short className="ml-2 align-middle" />}
                 </span>
                 <span
                   className={`inline-flex h-[22px] items-center rounded-[7px] px-2 text-[11px] font-bold whitespace-nowrap ${
@@ -144,6 +148,7 @@ export function CalendarCard({ tasks, today, monthOffset, selectedDate, onMonthC
                 >
                   {label}
                 </span>
+                <DeleteTaskButton title={t.title} onDelete={() => onDelete(t.id)} size="sm" />
               </li>
             );
           })}

@@ -25,6 +25,7 @@ npm run build:pages   # gera out/ (site estático); no Windows defina PAGES_EXPO
 - Tudo fica salvo no `localStorage` do navegador: só aquele navegador, naquele aparelho, vê as tarefas.
 - Limpar os dados do site apaga as tarefas. Em **Seus dados** há **Exportar backup (.json)** e **Importar backup**.
 - O app começa vazio; **Carregar exemplos** preenche com tarefas fictícias (removíveis).
+- Cada tarefa tem lixeira para excluir (com **Desfazer** por 10 s) e pode ser marcada para o **reporte semanal** ao criá-la.
 
 ## Estrutura
 

@@ -59,8 +59,16 @@ export function createTask(input: NewTaskInput): Task {
     status: "TODO",
     deliveredAt: null,
     projectName: input.projectName,
+    weeklyReport: input.weeklyReport,
   };
 }
+
+/** Remove a tarefa da lista. */
+export const removeTask = (tasks: Task[], id: string): Task[] => tasks.filter((t) => t.id !== id);
+
+/** Devolve uma tarefa excluída (Desfazer); não duplica se ela já voltou. */
+export const restoreTask = (tasks: Task[], task: Task): Task[] =>
+  tasks.some((t) => t.id === task.id) ? tasks : [...tasks, task];
 
 /** Horários do modal: 30 em 30 min, das 07:00 às 22:00. */
 export const TIME_OPTIONS: string[] = (() => {

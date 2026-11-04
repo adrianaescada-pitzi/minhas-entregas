@@ -29,6 +29,8 @@ export const taskSchema: z.ZodType<Task> = z.object({
   status: z.enum(["TODO", "DOING", "DONE"]),
   deliveredAt: isoDateTime.nullable(),
   projectName: z.string().max(200).nullable(),
+  // tarefas salvas antes deste campo existir valem "não"
+  weeklyReport: z.boolean().default(false),
 });
 
 export interface ParsedTasks {

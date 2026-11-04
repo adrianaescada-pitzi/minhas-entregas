@@ -1,7 +1,9 @@
 import { formatShortDate, plural } from "@/lib/dates";
 import { daysLate } from "@/lib/tasks";
 import type { Task, TaskStatus } from "@/lib/types";
+import { DeleteTaskButton } from "./DeleteTaskButton";
 import { AlertIcon } from "./icons";
+import { ReportBadge } from "./ReportBadge";
 import { StatusSwitch } from "./StatusSwitch";
 import { CARD, PRIORITY_BADGE, PRIORITY_LABEL } from "./styles";
 
@@ -9,9 +11,10 @@ interface Props {
   tasks: Task[];
   today: string;
   onStatusChange: (id: string, status: TaskStatus) => void;
+  onDelete: (id: string) => void;
 }
 
-export function OverdueCard({ tasks, today, onStatusChange }: Props) {
+export function OverdueCard({ tasks, today, onStatusChange, onDelete }: Props) {
   return (
     <section id="atrasadas" aria-labelledby="h-atrasadas" className={`${CARD} flex scroll-mt-5 flex-col gap-4`}>
       <div className="flex items-start justify-between gap-3">
@@ -41,11 +44,15 @@ export function OverdueCard({ tasks, today, onStatusChange }: Props) {
                 <span className="text-xs font-semibold text-late-fg">
                   Venceu {formatShortDate(t.dueDate)} · {plural(daysLate(t, today), "dia", "dias")} de atraso
                 </span>
+                {t.weeklyReport && <ReportBadge className="mt-1 self-start" />}
               </span>
-              <span
-                className={`inline-flex h-6 items-center rounded-lg px-2 text-[11px] font-bold ${PRIORITY_BADGE[t.priority]}`}
-              >
-                {PRIORITY_LABEL[t.priority]}
+              <span className="flex flex-none flex-col items-end gap-2">
+                <span
+                  className={`inline-flex h-6 items-center rounded-lg px-2 text-[11px] font-bold ${PRIORITY_BADGE[t.priority]}`}
+                >
+                  {PRIORITY_LABEL[t.priority]}
+                </span>
+                <DeleteTaskButton title={t.title} onDelete={() => onDelete(t.id)} />
               </span>
             </div>
             <StatusSwitch task={t} onChange={onStatusChange} variant="block" />

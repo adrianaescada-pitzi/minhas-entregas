@@ -31,6 +31,7 @@ export function NewTaskModal({ today, projectNames, onClose, onSave }: Props) {
   const [reminder, setReminder] = useState<ReminderOffset>("MIN_30");
   const [priority, setPriority] = useState<Priority>("MEDIUM");
   const [project, setProject] = useState("");
+  const [weeklyReport, setWeeklyReport] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -60,6 +61,7 @@ export function NewTaskModal({ today, projectNames, onClose, onSave }: Props) {
       priority,
       reminderOffset: reminder,
       projectName: project.trim() || null,
+      weeklyReport,
     });
   }
 
@@ -225,6 +227,25 @@ export function NewTaskModal({ today, projectNames, onClose, onSave }: Props) {
             ))}
           </datalist>
         </div>
+
+        <label
+          htmlFor={`${id}-reporte`}
+          className="flex min-h-11 cursor-pointer items-start gap-3 rounded-field border border-field-border bg-field px-3.5 py-3"
+        >
+          <input
+            id={`${id}-reporte`}
+            type="checkbox"
+            checked={weeklyReport}
+            onChange={(e) => setWeeklyReport(e.target.checked)}
+            className="mt-0.5 size-5 flex-none accent-[#7C3AED]"
+          />
+          <span className="flex flex-col gap-0.5">
+            <span className="text-[13px] font-bold">Usar no reporte semanal</span>
+            <span className="text-xs text-ink-2">
+              A tarefa fica com o selo &ldquo;Reporte semanal&rdquo; para você montar o reporte da semana depois.
+            </span>
+          </span>
+        </label>
 
         <div className="flex flex-wrap justify-end gap-2.5 pt-1">
           <button

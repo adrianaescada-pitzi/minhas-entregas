@@ -26,6 +26,8 @@ export interface Task {
   /** "YYYY-MM-DDTHH:mm"; null enquanto não concluída */
   deliveredAt: string | null;
   projectName: string | null;
+  /** marcada para entrar no reporte semanal (feito depois) */
+  weeklyReport: boolean;
 }
 
 export interface NewTaskInput {
@@ -35,4 +37,5 @@ export interface NewTaskInput {
   priority: Priority;
   reminderOffset: ReminderOffset;
   projectName: string | null;
+  weeklyReport: boolean;
 }

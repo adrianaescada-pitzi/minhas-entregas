@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatDayMonthLong, formatHeaderDate, monthOffsetOf, nowInSaoPaulo, parseDate, workWeek } from "@/lib/dates";
 import { periodStats } from "@/lib/progress";
 import { dismissReminder, snoozeReminder } from "@/lib/reminders";
-import { createTask, daysLate, overdueTasks, setTaskStatus, todayTasks, weekTasks } from "@/lib/tasks";
+import { createTask, daysLate, overdueTasks, removeTask, restoreTask, setTaskStatus, todayTasks, weekTasks } from "@/lib/tasks";
 import { updateTasks } from "@/lib/taskStore";
-import type { NewTaskInput, TaskStatus } from "@/lib/types";
+import type { NewTaskInput, Task, TaskStatus } from "@/lib/types";
 import { CalendarCard } from "./CalendarCard";
 import { DataCard, loadSamples } from "./DataCard";
 import { DeliveriesCard } from "./DeliveriesCard";
@@ -19,6 +19,7 @@ import { RemindersCard } from "./RemindersCard";
 import { Sidebar } from "./Sidebar";
 import { TodayTable, type StatusFilter } from "./TodayTable";
 import { TopBar } from "./TopBar";
+import { UndoToast } from "./UndoToast";
 import { useHydrated, useTaskStore } from "./useTaskStore";
 import { WelcomeCard } from "./WelcomeCard";
 
@@ -71,6 +72,8 @@ function DashboardContent() {
   const [selectedDate, setSelectedDate] = useState(today);
   const [monthOffset, setMonthOffset] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  /** última tarefa excluída, para o Desfazer */
+  const [deleted, setDeleted] = useState<Task | null>(null);
 
   // mantém "hoje" e a hora atualizados (virada do dia, saudação)
   useEffect(() => {
@@ -87,6 +90,19 @@ function DashboardContent() {
     setMonthOffset(monthOffsetOf(today, input.dueDate));
     setModalOpen(false);
   };
+
+  const onDelete = (id: string) => {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+    updateTasks((prev) => removeTask(prev, id));
+    setDeleted(task);
+  };
+
+  const onUndoDelete = () => {
+    if (deleted) updateTasks((prev) => restoreTask(prev, deleted));
+    setDeleted(null);
+  };
+  const dismissUndo = useCallback(() => setDeleted(null), []);
 
   // sugestões do campo Projeto: os nomes já usados nas tarefas
   const projectNames = useMemo(
@@ -141,10 +157,11 @@ function DashboardContent() {
           query={query}
           onFilterChange={setFilter}
           onStatusChange={onStatusChange}
+          onDelete={onDelete}
         />
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] items-start gap-6">
-          <OverdueCard tasks={overdue} today={today} onStatusChange={onStatusChange} />
+          <OverdueCard tasks={overdue} today={today} onStatusChange={onStatusChange} onDelete={onDelete} />
           <CalendarCard
             tasks={tasks}
             today={today}
@@ -152,6 +169,7 @@ function DashboardContent() {
             selectedDate={selectedDate}
             onMonthChange={setMonthOffset}
             onSelectDate={setSelectedDate}
+            onDelete={onDelete}
           />
           <RemindersCard
             tasks={tasks}
@@ -165,6 +183,8 @@ function DashboardContent() {
 
         <DataCard tasks={tasks} today={today} status={status} />
       </main>
+
+      <UndoToast task={deleted} onUndo={onUndoDelete} onDismiss={dismissUndo} />
 
       {modalOpen && (
         <NewTaskModal today={today} projectNames={projectNames} onClose={() => setModalOpen(false)} onSave={onSave} />

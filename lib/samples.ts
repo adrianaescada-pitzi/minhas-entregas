@@ -48,6 +48,7 @@ export function buildSampleTasks(today: string): Task[] {
       status: S[status],
       deliveredAt: delivered ? `${addDaysISO(today, delivered.dayOffset)}T${delivered.time}` : null,
       projectName,
+      weeklyReport: false,
     };
   };
 
@@ -94,5 +95,7 @@ export function buildSampleTasks(today: string): Task[] {
     mk("f22", "Planejamento de dezembro", 22, "10:00", "media"),
     mk("f23", "Revisão de orçamento", 24, "15:00", "alta"),
   ];
-  return tasks.map((t) => ({ ...t, id: `${SAMPLE_PREFIX}${t.id}` }));
+  // algumas tarefas já marcadas para o reporte semanal, para mostrar o recurso
+  const forReport = new Set(["t1", "t3", "t5", "o1", "p1", "p2", "p4", "f9", "f16"]);
+  return tasks.map((t) => ({ ...t, id: `${SAMPLE_PREFIX}${t.id}`, weeklyReport: forReport.has(t.id) }));
 }

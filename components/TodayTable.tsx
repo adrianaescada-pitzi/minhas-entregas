@@ -2,7 +2,9 @@ import { formatDayMonth, formatShortDate } from "@/lib/dates";
 import { periodStats } from "@/lib/progress";
 import { matchesQuery, isDeliveredLate } from "@/lib/tasks";
 import type { Task, TaskStatus } from "@/lib/types";
+import { DeleteTaskButton } from "./DeleteTaskButton";
 import { DocIcon } from "./icons";
+import { ReportBadge } from "./ReportBadge";
 import { StatusSwitch } from "./StatusSwitch";
 import { CARD, PILL_LATE, PILL_OK, PRIORITY_BADGE, PRIORITY_LABEL, PRIORITY_TILE, STATUS_PILL } from "./styles";
 
@@ -23,6 +25,7 @@ interface Props {
   query: string;
   onFilterChange: (filter: StatusFilter) => void;
   onStatusChange: (id: string, status: TaskStatus) => void;
+  onDelete: (id: string) => void;
 }
 
 const TH = "bg-thead px-3.5 py-3 font-semibold";
@@ -43,7 +46,7 @@ function deliveredLabel(t: Task, today: string): { text: string; className: stri
   return { text: `${when}${late ? " · atraso" : ""}`, className: late ? PILL_LATE : PILL_OK };
 }
 
-export function TodayTable({ tasks, today, filter, query, onFilterChange, onStatusChange }: Props) {
+export function TodayTable({ tasks, today, filter, query, onFilterChange, onStatusChange, onDelete }: Props) {
   const stats = periodStats(tasks);
   const counts: Record<StatusFilter, number> = { ALL: stats.total, TODO: stats.todo, DOING: stats.doing, DONE: stats.done };
   const rows = tasks.filter((t) => (filter === "ALL" || t.status === filter) && matchesQuery(t, query));
@@ -77,8 +80,8 @@ export function TodayTable({ tasks, today, filter, query, onFilterChange, onStat
         </div>
       </div>
 
-      <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Tabela de tarefas de hoje">
-        <table className="w-full min-w-[900px] text-[13px]">
+      <div className="relative overflow-x-auto" tabIndex={0} role="region" aria-label="Tabela de tarefas de hoje">
+        <table className="w-full min-w-[960px] text-[13px]">
           <thead>
             <tr className="text-left text-xs text-ink-2">
               <th scope="col" className={`${TH} w-11 rounded-l-xl`}>
@@ -89,7 +92,10 @@ export function TodayTable({ tasks, today, filter, query, onFilterChange, onStat
               <th scope="col" className={TH}>Prazo</th>
               <th scope="col" className={TH}>Lembrete</th>
               <th scope="col" className={TH}>Status</th>
-              <th scope="col" className={`${TH} rounded-r-xl`}>Entrega</th>
+              <th scope="col" className={TH}>Entrega</th>
+              <th scope="col" className={`${TH} w-[68px] rounded-r-xl`}>
+                <span className="sr-only">Ações</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -109,7 +115,10 @@ export function TodayTable({ tasks, today, filter, query, onFilterChange, onStat
                       </span>
                       <span className="flex min-w-0 flex-col">
                         <span className={`font-bold ${done ? "text-muted line-through" : "text-ink"}`}>{t.title}</span>
-                        <span className="text-xs text-muted">{t.projectName ?? "Pessoal"}</span>
+                        <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+                          {t.projectName ?? "Pessoal"}
+                          {t.weeklyReport && <ReportBadge />}
+                        </span>
                       </span>
                     </div>
                   </td>
@@ -133,6 +142,9 @@ export function TodayTable({ tasks, today, filter, query, onFilterChange, onStat
                     >
                       {delivered.text}
                     </span>
+                  </td>
+                  <td className="border-b border-line px-3.5 py-3">
+                    <DeleteTaskButton title={t.title} onDelete={() => onDelete(t.id)} />
                   </td>
                 </tr>
               );
